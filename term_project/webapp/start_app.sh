@@ -7,12 +7,11 @@ cleanup() {
 }
 trap cleanup SIGINT
 
-backend_dir=/Users/chrisguarino/Documents/NJIT-working/CS631/dealership_crm/term_project/webapp/backend
-frontend_dir=/Users/chrisguarino/Documents/NJIT-working/CS631/dealership_crm/term_project/webapp/new-dealership
+backend_dir=/home/term_project/webapp/backend
+frontend_dir=/home/term_project/webapp/new-dealership
 backend_file=server.js
-NPM=/Users/chrisguarino/.nvm/versions/node/v21.6.2/bin/npm
-NODE=/Users/chrisguarino/.nvm/versions/node/v21.6.2/bin/node
-
+NPM=/usr/bin/npm
+NODE=/usr/bin/node
 echo "Starting backend server"
 cd $backend_dir
 echo "$NODE $backend_file"
