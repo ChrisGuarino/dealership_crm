@@ -136,7 +136,7 @@ CREATE TABLE Appointment (
     Appointment_ID INT AUTO_INCREMENT PRIMARY KEY,
     Drop_Off DATETIME,
     Pick_Up DATETIME,
-    Appointment_Made_Date DATETIME,
+    Appointment_Made_Date DATE,
     Car_ID INT,
     Package_ID INT,
     Time_Slot_ID INT,
@@ -202,7 +202,17 @@ VALUES
 ('Honda', 'Civic', 2021, 'Summer', 'Gasoline'),
 ('Ford', 'Focus', 2019, 'All-terrain', 'Electric'),
 ('Tesla', 'Model 3', 2022, 'Performance', 'Electric'),
-('Chevrolet', 'Malibu', 2018, 'All-season', 'Gasoline');
+('Chevrolet', 'Malibu', 2018, 'All-season', 'Gasoline'),
+('Nissan', 'Altima', 2023, 'All-season', 'Gasoline'),
+('Subaru', 'Outback', 2021, 'All-terrain', 'Hybrid'),
+('Hyundai', 'Elantra', 2020, 'Summer', 'Gasoline'),
+('Kia', 'Sorento', 2022, 'Winter', 'Hybrid'),
+('BMW', '3 Series', 2021, 'Performance', 'Gasoline'),
+('Mercedes-Benz', 'C-Class', 2023, 'Summer', 'Gasoline'),
+('Volkswagen', 'Golf', 2019, 'All-season', 'Diesel'),
+('Audi', 'A4', 2020, 'Winter', 'Gasoline'),
+('Jeep', 'Wrangler', 2022, 'All-terrain', 'Gasoline'),
+('Mazda', 'CX-5', 2021, 'All-season', 'Gasoline');
 
 
 -- Populating Car table
@@ -212,17 +222,32 @@ VALUES
 (2, 'Cloth', 20000, 'Blue', 2),
 (3, 'Leather', 10000, 'White', 3),
 (4, 'Synthetic', 5000, 'Red', 4),
-(5, 'Vinyl', 30000, 'Silver', 5);
+(5, 'Vinyl', 30000, 'Silver', 5),
+(6, 'Leather', 18000, 'Gray', 6),
+(7, 'Cloth', 22000, 'Green', 7),
+(8, 'Synthetic', 12000, 'Black', 8),
+(9, 'Vinyl', 35000, 'Red', 9),
+(10, 'Leather', 9000, 'White', 10),
+(11, 'Cloth', 25000, 'Blue', 11),
+(12, 'Synthetic', 15000, 'Silver', 12),
+(13, 'Vinyl', 40000, 'Gray', 13),
+(14, 'Leather', 8000, 'Black', 14),
+(15, 'Cloth', 30000, 'Red', 15);
 
 
 -- Populating Cars_In_Inventory table
 INSERT INTO Cars_In_Inventory (Car_ID, Interior, Odometer, Color, Cost)
 VALUES
-(1, 'Leather', 15000, 'Black', 25000.00),
-(2, 'Cloth', 20000, 'Blue', 22000.00),
-(3, 'Leather', 10000, 'White', 27000.00),
-(4, 'Synthetic', 5000, 'Red', 32000.00),
-(5, 'Vinyl', 30000, 'Silver', 20000.00);
+(6, 'Leather', 18000, 'Gray', 28000),
+(7, 'Cloth', 22000, 'Green', 25000),
+(8, 'Synthetic', 12000, 'Black', 45000),
+(9, 'Vinyl', 35000, 'Red', 48000),
+(10, 'Leather', 9000, 'White', 26000),
+(11, 'Cloth', 25000, 'Blue', 32000),
+(12, 'Synthetic', 15000, 'Silver', 22000),
+(13, 'Vinyl', 40000, 'Gray', 19000),
+(14, 'Leather', 8000, 'Black', 33000),
+(15, 'Cloth', 30000, 'Red', 30000);
 
 
 -- Populating Customer_Cars table
@@ -236,43 +261,68 @@ VALUES
 
 
 -- Populating Time_Slot table
-INSERT INTO Time_Slot (Start_Time, End_Time, Date)
-VALUES
-('08:00:00', '09:00:00', '2024-12-01'),
-('09:00:00', '10:00:00', '2024-12-01'),
-('10:00:00', '11:00:00', '2024-12-01'),
-('11:00:00', '12:00:00', '2024-12-01'),
-('13:00:00', '14:00:00', '2024-12-01');
+-- INSERT INTO Time_Slot (Start_Time, End_Time, Date)
+-- VALUES
+-- ('08:00:00', '09:00:00', '2024-12-01'),
+-- ('09:00:00', '10:00:00', '2024-12-01'),
+-- ('10:00:00', '11:00:00', '2024-12-01'),
+-- ('11:00:00', '12:00:00', '2024-12-01'),
+-- ('13:00:00', '14:00:00', '2024-12-01');
 
 
 -- Populating Package table
 INSERT INTO Package (Name, Time_Since_Purchase)
 VALUES
-('Basic Wash', 1),
-('Premium Wash', 3),
-('Interior Detailing', 2),
-('Full Detailing', 6),
-('Paint Protection', 12);
+('1 Year Service', 12),
+('2 Year Service', 24),
+('3 Year Service', 36),
+('4 Year Service', 48),
+('5 Year Service', 60),
+('6 Year Service', 72),
+('7 Year Service', 84),
+('8 Year Service', 96),
+('9 Year Service', 108),
+('10 Year Service', 120);
 
 
 -- Populating Task table
 INSERT INTO Task (Name, Estd_Time, Estd_Labor_Cost)
 VALUES
-('Wash Exterior', 1, 15.00),
-('Vacuum Interior', 2, 30.00),
-('Polish Exterior', 3, 50.00),
-('Wax Exterior', 2, 40.00),
-('Apply Ceramic Coating', 4, 100.00);
+('Oil Change', 30, 40),
+('Brake Pad Replacement', 90, 120),
+('Tire Rotation', 60, 50),
+('Air Filter Replacement', 30, 30),
+('Battery Check', 30, 25),
+('Transmission Fluid Replacement', 120, 150),
+('Coolant Flush', 90, 100),
+('Wheel Alignment', 90, 80),
+('Wiper Blade Replacement', 30, 20),
+('Headlight Restoration', 60, 60),
+('Spark Plug Replacement', 90, 90),
+('Fuel System Cleaning', 120, 140),
+('AC Service', 90, 100),
+('Exhaust System Inspection', 60, 75),
+('Timing Belt Replacement', 240, 400);
 
 
 -- Populating Part table
 INSERT INTO Part (Cost_Of_Part, Name)
 VALUES
-(10.00, 'Wax'),
-(20.00, 'Polish'),
-(50.00, 'Ceramic Coating Kit'),
-(5.00, 'Vacuum Bag'),
-(15.00, 'Glass Cleaner');
+(30, 'Oil Filter'),
+(50, 'Brake Pads'),
+(15, 'Tire Rotation Tool'),
+(20, 'Air Filter'),
+(100, 'Car Battery'),
+(70, 'Transmission Fluid'),
+(40, 'Coolant'),
+(100, 'Alignment Tools'),
+(10, 'Wiper Blades'),
+(25, 'Headlight Restoration Kit'),
+(15, 'Spark Plugs'),
+(60, 'Fuel System Cleaner'),
+(50, 'AC Service Kit'),
+(30, 'Exhaust Inspection Tools'),
+(200, 'Timing Belt');
 
 
 -- Populating Owns table
@@ -296,53 +346,154 @@ VALUES
 
 
 -- Populating Appointment table
-INSERT INTO Appointment (Drop_Off, Pick_Up, Appointment_Made_Date, Car_ID, Package_ID, Time_Slot_ID, Customer_ID)
-VALUES
-('2024-12-01 08:00:00', '2024-12-01 09:00:00', '2024-11-30 10:00:00', 1, 1, 1, 1),
-('2024-12-01 09:00:00', '2024-12-01 10:00:00', '2024-11-30 10:30:00', 2, 2, 2, 2),
-('2024-12-01 10:00:00', '2024-12-01 11:00:00', '2024-11-30 11:00:00', 3, 3, 3, 3),
-('2024-12-01 11:00:00', '2024-12-01 12:00:00', '2024-11-30 11:30:00', 4, 4, 4, 4),
-('2024-12-01 13:00:00', '2024-12-01 14:00:00', '2024-11-30 12:00:00', 5, 5, 5, 5);
+-- INSERT INTO Appointment (Drop_Off, Pick_Up, Appointment_Made_Date, Car_ID, Package_ID, Time_Slot_ID, Customer_ID)
+-- VALUES
+-- ('2024-12-01 08:00:00', '2024-12-01 09:00:00', '2024-11-30 10:00:00', 1, 1, 1, 1),
+-- ('2024-12-01 09:00:00', '2024-12-01 10:00:00', '2024-11-30 10:30:00', 2, 2, 2, 2),
+-- ('2024-12-01 10:00:00', '2024-12-01 11:00:00', '2024-11-30 11:00:00', 3, 3, 3, 3),
+-- ('2024-12-01 11:00:00', '2024-12-01 12:00:00', '2024-11-30 11:30:00', 4, 4, 4, 4),
+-- ('2024-12-01 13:00:00', '2024-12-01 14:00:00', '2024-11-30 12:00:00', 5, 5, 5, 5);
 
 
 -- (Similarly, populate Additionally_Scheduled, Was_Performed, Was_Replaced, Recommends, and Failure_Requires)
 
-INSERT INTO Additionally_Scheduled (Appointment_ID, Task_ID)
-VALUES
-(1, 2),    -- Task 2 additionally scheduled for Appointment 1
-(2, 3),    -- Task 3 additionally scheduled for Appointment 2
-(3, 1),    -- Task 1 additionally scheduled for Appointment 3
-(4, 4),    -- Task 4 additionally scheduled for Appointment 4
-(5, 5);    -- Task 5 additionally scheduled for Appointment 5
+-- INSERT INTO Additionally_Scheduled (Appointment_ID, Task_ID)
+-- VALUES
+-- (1, 2),    -- Task 2 additionally scheduled for Appointment 1
+-- (2, 3),    -- Task 3 additionally scheduled for Appointment 2
+-- (3, 1),    -- Task 1 additionally scheduled for Appointment 3
+-- (4, 4),    -- Task 4 additionally scheduled for Appointment 4
+-- (5, 5);    -- Task 5 additionally scheduled for Appointment 5
 
-INSERT INTO Was_Performed (Appointment_ID, Task_ID, Labor_Cost, Time)
-VALUES
-(1, 1, 50.00, 60),  -- Task 1 performed in Appointment 1
-(2, 2, 30.00, 45),  -- Task 2 performed in Appointment 2
-(3, 3, 70.00, 90),  -- Task 3 performed in Appointment 3
-(4, 4, 40.00, 60),  -- Task 4 performed in Appointment 4
-(5, 5, 100.00, 120);-- Task 5 performed in Appointment 5
+-- INSERT INTO Was_Performed (Appointment_ID, Task_ID, Labor_Cost, Time)
+-- VALUES
+-- (1, 1, 50.00, 60),  -- Task 1 performed in Appointment 1
+-- (2, 2, 30.00, 45),  -- Task 2 performed in Appointment 2
+-- (3, 3, 70.00, 90),  -- Task 3 performed in Appointment 3
+-- (4, 4, 40.00, 60),  -- Task 4 performed in Appointment 4
+-- (5, 5, 100.00, 120);-- Task 5 performed in Appointment 5
 
-INSERT INTO Was_Replaced (Appointment_ID, Part_ID)
-VALUES
-(1, 1),    -- Part 1 replaced during Appointment 1
-(2, 2),    -- Part 2 replaced during Appointment 2
-(3, 3),    -- Part 3 replaced during Appointment 3
-(4, 4),    -- Part 4 replaced during Appointment 4
-(5, 5);    -- Part 5 replaced during Appointment 5
+-- INSERT INTO Was_Replaced (Appointment_ID, Part_ID)
+-- VALUES
+-- (1, 1),    -- Part 1 replaced during Appointment 1
+-- (2, 2),    -- Part 2 replaced during Appointment 2
+-- (3, 3),    -- Part 3 replaced during Appointment 3
+-- (4, 4),    -- Part 4 replaced during Appointment 4
+-- (5, 5);    -- Part 5 replaced during Appointment 5
 
 INSERT INTO Recommends (Package_ID, Task_ID, Is_Mandatory)
 VALUES
-(1, 1, TRUE),    -- Task 1 is mandatory for Package 1
-(2, 2, TRUE),    -- Task 2 is mandatory for Package 2
-(3, 3, FALSE),   -- Task 3 is optional for Package 3
-(4, 4, TRUE),    -- Task 4 is mandatory for Package 4
-(5, 5, FALSE);   -- Task 5 is optional for Package 5
+-- 1 Year Service
+(1, 1, TRUE), -- Oil Change
+(1, 3, TRUE), -- Tire Rotation
+(1, 4, TRUE), -- Air Filter Replacement
+(1, 5, FALSE), -- Battery Check
+
+-- 2 Year Service
+(2, 1, TRUE), -- Oil Change
+(2, 3, TRUE), -- Tire Rotation
+(2, 4, TRUE), -- Air Filter Replacement
+(2, 5, TRUE), -- Battery Check
+(2, 10, FALSE), -- Headlight Restoration
+
+-- 3 Year Service
+(3, 1, TRUE), -- Oil Change
+(3, 3, TRUE), -- Tire Rotation
+(3, 4, TRUE), -- Air Filter Replacement
+(3, 5, TRUE), -- Battery Check
+(3, 2, FALSE), -- Brake Pad Replacement
+
+-- 4 Year Service
+(4, 1, TRUE), -- Oil Change
+(4, 3, TRUE), -- Tire Rotation
+(4, 2, TRUE), -- Brake Pad Replacement
+(4, 6, FALSE), -- Transmission Fluid Replacement
+(4, 9, FALSE), -- Wiper Blade Replacement
+
+-- 5 Year Service
+(5, 1, TRUE), -- Oil Change
+(5, 3, TRUE), -- Tire Rotation
+(5, 2, TRUE), -- Brake Pad Replacement
+(5, 6, TRUE), -- Transmission Fluid Replacement
+(5, 7, FALSE), -- Coolant Flush
+
+-- 6 Year Service
+(6, 1, TRUE), -- Oil Change
+(6, 3, TRUE), -- Tire Rotation
+(6, 2, TRUE), -- Brake Pad Replacement
+(6, 6, TRUE), -- Transmission Fluid Replacement
+(6, 7, TRUE), -- Coolant Flush
+
+-- 7 Year Service
+(7, 1, TRUE), -- Oil Change
+(7, 3, TRUE), -- Tire Rotation
+(7, 2, TRUE), -- Brake Pad Replacement
+(7, 7, TRUE), -- Coolant Flush
+(7, 11, FALSE), -- Spark Plug Replacement
+
+-- 8 Year Service
+(8, 1, TRUE), -- Oil Change
+(8, 2, TRUE), -- Brake Pad Replacement
+(8, 6, TRUE), -- Transmission Fluid Replacement
+(8, 7, TRUE), -- Coolant Flush
+(8, 11, TRUE), -- Spark Plug Replacement
+
+-- 9 Year Service
+(9, 1, TRUE), -- Oil Change
+(9, 2, TRUE), -- Brake Pad Replacement
+(9, 7, TRUE), -- Coolant Flush
+(9, 12, FALSE), -- Fuel System Cleaning
+
+-- 10 Year Service
+(10, 1, TRUE), -- Oil Change
+(10, 2, TRUE), -- Brake Pad Replacement
+(10, 6, TRUE), -- Transmission Fluid Replacement
+(10, 7, TRUE), -- Coolant Flush
+(10, 15, TRUE); -- Timing Belt Replacement
 
 INSERT INTO Failure_Requires (Task_ID, Part_ID)
 VALUES
-(1, 1),    -- Task 1 requires Part 1
-(2, 2),    -- Task 2 requires Part 2
-(3, 3),    -- Task 3 requires Part 3
-(4, 4),    -- Task 4 requires Part 4
-(5, 5);    -- Task 5 requires Part 5
+-- Oil Change
+(1, 1), -- Oil Change requires Oil Filter
+
+-- Brake Pad Replacement
+(2, 2), -- Brake Pad Replacement requires Brake Pads
+
+-- Tire Rotation
+(3, 3), -- Tire Rotation requires Tire Rotation Tool
+
+-- Air Filter Replacement
+(4, 4), -- Air Filter Replacement requires Air Filter
+
+-- Battery Check
+(5, 5), -- Battery Check requires Car Battery
+
+-- Transmission Fluid Replacement
+(6, 6), -- Transmission Fluid Replacement requires Transmission Fluid
+
+-- Coolant Flush
+(7, 7), -- Coolant Flush requires Coolant
+
+-- Wheel Alignment
+(8, 8), -- Wheel Alignment requires Alignment Tools
+
+-- Wiper Blade Replacement
+(9, 9), -- Wiper Blade Replacement requires Wiper Blades
+
+-- Headlight Restoration
+(10, 10), -- Headlight Restoration requires Headlight Restoration Kit
+
+-- Spark Plug Replacement
+(11, 11), -- Spark Plug Replacement requires Spark Plugs
+
+-- Fuel System Cleaning
+(12, 12), -- Fuel System Cleaning requires Fuel System Cleaner
+
+-- AC Service
+(13, 13), -- AC Service requires AC Service Kit
+
+-- Exhaust System Inspection
+(14, 14), -- Exhaust System Inspection requires Exhaust Inspection Tools
+
+-- Timing Belt Replacement
+(15, 15); -- Timing Belt Replacement requires Timing Belt

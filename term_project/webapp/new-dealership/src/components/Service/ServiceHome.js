@@ -14,6 +14,7 @@ const ServiceHome = () => {
                     <li><Link to="/service/delete-appointment">Delete Appointment</Link></li>
                     <li><Link to="/service/packages">View Service Packages</Link></li>
                     <li><Link to="/service/parts">View Parts</Link></li>
+                    <li><Link to="/service/was_performed">Log Performed Tasks</Link></li>
                 </ul>
             </nav>
         </div>

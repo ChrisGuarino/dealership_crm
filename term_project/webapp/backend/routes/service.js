@@ -4,13 +4,49 @@ const express = require("express");
 module.exports = (db) => {
   const router = express.Router();
 
+// Helper function to make `db.query` return a Promise
+const queryPromise = (query, params = []) => {
+    return new Promise((resolve, reject) => {
+        db.query(query, params, (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results);
+        });
+    });
+};
+
   // Get all service appointments
 router.get('/appointments', (req, res) => {
-  db.query('SELECT * FROM Appointment', (err, results) => {
+    const query=`
+    SELECT 
+        Appointment.Appointment_ID,
+        Package.Name AS Package_Name,
+        Appointment.Customer_ID,
+        Appointment.Car_ID
+    FROM 
+        Appointment
+    JOIN
+        Package ON Appointment.Package_ID = Package.Package_ID 
+    `;
+  db.query(query, (err, results) => {
       if (err) res.status(500).send(err);
       else res.json(results);
   });
 });
+// Get specific appointments
+router.get('/appointments/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM Appointment WHERE Appointment_ID = ?';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error fetching appointment details:', err);
+            return res.status(500).send('Error fetching appointment details.');
+        }
+        res.json(results[0]);
+    });
+});
+
 
 // Get all service packages
 router.get('/packages', (req, res) => {
@@ -20,6 +56,14 @@ router.get('/packages', (req, res) => {
   });
 });
 
+// Get all service tasks
+router.get('/tasks', (req, res) => {
+    db.query('SELECT * FROM Task', (err, results) => {
+        if (err) res.status(500).send(err);
+        else res.json(results);
+    });
+  });
+
 // Get all parts
 router.get('/parts', (req, res) => {
   db.query('SELECT * FROM Part', (err, results) => {
@@ -27,41 +71,76 @@ router.get('/parts', (req, res) => {
       else res.json(results);
   });
 });
-// Add a new service appointment
+
+//Add/Schedule Service Appointment
 router.post('/appointments', (req, res) => {
-  const {
-      Drop_Off,
-      Pick_Up,
-      Appointment_Made_Date,
-      Car_ID,
-      Package_ID,
-      Time_Slot_ID,
-      Customer_ID
-  } = req.body;
+    const {
+        Start_Time,
+        End_Time,
+        Date,
+        Drop_Off,
+        Pick_Up,
+        Appointment_Made_Date,
+        Car_ID,
+        Package_ID,
+        Customer_ID,
+        Additional_Tasks, // Optional field
+    } = req.body;
 
-  // Validate input
-  if (!Drop_Off || !Pick_Up || !Appointment_Made_Date || !Car_ID || !Package_ID || !Time_Slot_ID || !Customer_ID) {
-      return res.status(400).json({ error: 'All fields are required.' });
-  }
+    // Validate mandatory fields
+    if (!Start_Time || !End_Time || !Date || !Drop_Off || !Pick_Up || !Appointment_Made_Date || !Car_ID || !Package_ID || !Customer_ID) {
+        return res.status(400).json({ error: 'All fields are required.' });
+    }
 
-  const query = `
-      INSERT INTO Appointment (
-          Drop_Off, Pick_Up, Appointment_Made_Date, Car_ID, Package_ID, Time_Slot_ID, Customer_ID
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+    const insertTimeSlotQuery = `
+        INSERT INTO Time_Slot (Start_Time, End_Time, Date)
+        VALUES (?, ?, ?)
+    `;
+    const insertAppointmentQuery = `
+        INSERT INTO Appointment (Drop_Off, Pick_Up, Appointment_Made_Date, Car_ID, Package_ID, Time_Slot_ID, Customer_ID )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    const insertAdditionalTasksQuery = `
+        INSERT INTO Additionally_Scheduled (Appointment_ID, Task_ID)
+        VALUES ?
+    `;
 
-  db.query(
-      query,
-      [Drop_Off, Pick_Up, Appointment_Made_Date, Car_ID, Package_ID, Time_Slot_ID, Customer_ID],
-      (err, results) => {
-          if (err) {
-              console.error('Error inserting appointment:', err);
-              return res.status(500).send('Error inserting appointment.');
-          }
-          res.status(201).json({ message: 'Appointment added successfully.', appointmentId: results.insertId });
-      }
-  );
+    // Step 1: Insert into Time_Slot
+    queryPromise(insertTimeSlotQuery, [Start_Time, End_Time, Date])
+        .then((timeSlotResult) => {
+            const timeSlotId = timeSlotResult.insertId;
+
+            // Step 2: Insert into Appointment with Time_Slot_ID
+            return queryPromise(insertAppointmentQuery, [
+                Drop_Off,
+                Pick_Up,
+                Appointment_Made_Date,
+                Car_ID,
+                Package_ID,
+                timeSlotId,
+                Customer_ID,
+            ]);
+        })
+        .then((appointmentResult) => {
+            const appointmentId = appointmentResult.insertId;
+
+            // Step 3: Insert additional tasks only if provided
+            if (Additional_Tasks && Additional_Tasks.length > 0) {
+                const taskValues = Additional_Tasks.map((taskId) => [appointmentId, taskId]);
+                return queryPromise(insertAdditionalTasksQuery, [taskValues]);
+            }
+        })
+        .then(() => {
+            res.status(201).json({ message: 'Appointment added successfully, including additional tasks if provided.' });
+        })
+        .catch((err) => {
+            console.error('Database error:', err);
+            res.status(500).send('Error adding appointment.');
+        });
 });
+
+
+
 
 // Delete a service appointment by ID
 router.delete('/appointments/:id', (req, res) => {
@@ -352,7 +431,242 @@ router.get('/packages/:packageId/details', (req, res) => {
         res.json(results[0]);
     });
 });
-;
+
+router.post('/was_performed', (req, res) => {
+    const { appointmentId, taskId, laborCost, time } = req.body;
+
+    if (!appointmentId || !taskId || !laborCost || !time) {
+        return res.status(400).json({ error: 'All fields are required.' });
+    }
+
+    const query = `
+        INSERT INTO Was_Performed (Appointment_ID, Task_ID, Labor_Cost, Time)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(query, [appointmentId, taskId, laborCost, time], (err, results) => {
+        if (err) {
+            console.error('Error inserting into Was_Performed:', err);
+            return res.status(500).send('Error inserting record.');
+        }
+
+        res.status(201).json({ message: 'Task successfully logged as performed.' });
+    });
+});
+
+router.post('/was_replaced', (req, res) => {
+    const { appointmentId, partIds } = req.body;
+
+    if (!appointmentId || !partIds || partIds.length === 0) {
+        return res.status(400).json({ error: 'Appointment ID and parts are required.' });
+    }
+
+    const query = `
+        INSERT INTO Was_Replaced (Appointment_ID, Part_ID)
+        VALUES ?
+    `;
+
+    // Prepare values for bulk insertion
+    const values = partIds.map((partId) => [appointmentId, partId]);
+
+    db.query(query, [values], (err) => {
+        if (err) {
+            console.error('Error inserting into Was_Replaced:', err);
+            return res.status(500).send('Error inserting parts.');
+        }
+
+        res.status(201).json({ message: 'Parts successfully logged as replaced.' });
+    });
+});
+
+router.get('/tasks/:taskId/parts', (req, res) => {
+    const { taskId } = req.params;
+
+    const query = `
+        SELECT 
+            Part.Part_ID,
+            Part.Name,
+            Part.Cost_Of_Part
+        FROM 
+            Failure_Requires
+        INNER JOIN 
+            Part ON Failure_Requires.Part_ID = Part.Part_ID
+        WHERE 
+            Failure_Requires.Task_ID = ?;
+    `;
+
+    db.query(query, [taskId], (err, results) => {
+        if (err) {
+            console.error('Error fetching parts for task:', err);
+            return res.status(500).send('Error fetching parts.');
+        }
+
+        res.json(results);
+    });
+});
+
+// router.get('/bill/:appointmentId', (req, res) => {
+//     const { appointmentId } = req.params;
+
+//     const query = `
+//         SELECT 
+//             Was_Performed.Task_ID,
+//             Task.Name AS Task_Name,
+//             Was_Performed.Labor_Cost,
+//             Was_Performed.Time,
+//             Part.Part_ID,
+//             Part.Name AS Part_Name,
+//             Part.Cost_Of_Part
+//         FROM 
+//             Appointment
+//         LEFT JOIN 
+//             Was_Performed ON Appointment.Appointment_ID = Was_Performed.Appointment_ID
+//         LEFT JOIN 
+//             Task ON Was_Performed.Task_ID = Task.Task_ID
+//         LEFT JOIN 
+//             Was_Replaced ON Appointment.Appointment_ID = Was_Replaced.Appointment_ID
+//         LEFT JOIN 
+//             Part ON Was_Replaced.Part_ID = Part.Part_ID
+//         WHERE 
+//             Appointment.Appointment_ID = ?;
+//     `;
+
+//     db.query(query, [appointmentId], (err, results) => {
+//         if (err) {
+//             console.error('Error fetching bill details:', err);
+//             return res.status(500).send('Error fetching bill details.');
+//         }
+
+//         if (results.length === 0) {
+//             return res.status(404).json({ error: 'No data found for the given appointment.' });
+//         }
+
+//         // Calculate total labor cost and part cost
+//         const tasks = results.filter((row) => row.Task_ID).map((row) => ({
+//             Task_ID: row.Task_ID,
+//             Task_Name: row.Task_Name,
+//             Labor_Cost: row.Labor_Cost,
+//             Time: row.Time,
+//         }));
+
+//         const parts = results.filter((row) => row.Part_ID).map((row) => ({
+//             Part_ID: row.Part_ID,
+//             Part_Name: row.Part_Name,
+//             Cost_Of_Part: row.Cost_Of_Part,
+//         }));
+
+//         const totalLaborCost = tasks.reduce((acc, task) => acc + (parseFloat(task.Labor_Cost) || 0), 0);
+//         const totalPartCost = parts.reduce((acc, part) => acc + (parseFloat(part.Cost_Of_Part) || 0), 0);
+//         const totalCost = parseFloat(totalLaborCost) + parseFloat(totalPartCost);
+//         res.json({
+//             tasks,
+//             parts,
+//             totalLaborCost,
+//             totalPartCost,
+//             totalCost,
+//         });
+//     });
+// });
+
+router.get('/bill/:appointmentId', async (req, res) => {
+    const { appointmentId } = req.params;
+
+    // Query for tasks performed
+    const taskQuery = `
+        SELECT 
+            Was_Performed.Task_ID,
+            Task.Name AS Task_Name,
+            Was_Performed.Labor_Cost,
+            Was_Performed.Time
+        FROM 
+            Appointment
+        LEFT JOIN 
+            Was_Performed ON Appointment.Appointment_ID = Was_Performed.Appointment_ID
+        LEFT JOIN 
+            Task ON Was_Performed.Task_ID = Task.Task_ID
+        WHERE 
+            Appointment.Appointment_ID = ?;
+    `;
+
+    // Query for parts replaced
+    const partQuery = `
+        SELECT 
+            Part.Part_ID,
+            Part.Name AS Part_Name,
+            Part.Cost_Of_Part
+        FROM 
+            Appointment
+        LEFT JOIN 
+            Was_Replaced ON Appointment.Appointment_ID = Was_Replaced.Appointment_ID
+        LEFT JOIN 
+            Part ON Was_Replaced.Part_ID = Part.Part_ID
+        WHERE 
+            Appointment.Appointment_ID = ?;
+    `;
+
+    try {
+        // Execute both queries in parallel
+        const [tasks, parts] = await Promise.all([
+            db.promise().query(taskQuery, [appointmentId]),
+            db.promise().query(partQuery, [appointmentId]),
+        ]);
+
+        // Extract the results
+        const taskResults = tasks[0];
+        const partResults = parts[0];
+
+        // Calculate totals
+        const totalLaborCost = taskResults.reduce(
+            (acc, task) => acc + (parseFloat(task.Labor_Cost) || 0),
+            0
+        );
+        const totalPartCost = partResults.reduce(
+            (acc, part) => acc + (parseFloat(part.Cost_Of_Part) || 0),
+            0
+        );
+        const totalCost = totalLaborCost + totalPartCost;
+
+        // Respond with combined results
+        res.json({
+            tasks: taskResults,
+            parts: partResults,
+            totalLaborCost,
+            totalPartCost,
+            totalCost,
+        });
+    } catch (err) {
+        console.error('Error fetching bill details:', err);
+        res.status(500).send('Error fetching bill details.');
+    }
+});
+
+router.get('/appointments/:appointmentId/tasks', (req, res) => {
+    const { appointmentId } = req.params;
+
+    const query = `
+        SELECT DISTINCT
+            Task.Task_ID,
+            Task.Name
+        FROM
+            Appointment
+        LEFT JOIN Package ON Appointment.Package_ID = Package.Package_ID
+        LEFT JOIN Recommends ON Package.Package_ID = Recommends.Package_ID
+        LEFT JOIN Additionally_Scheduled ON Appointment.Appointment_ID = Additionally_Scheduled.Appointment_ID
+        LEFT JOIN Task ON Recommends.Task_ID = Task.Task_ID OR Additionally_Scheduled.Task_ID = Task.Task_ID
+        WHERE
+            Appointment.Appointment_ID = ?;
+    `;
+
+    db.query(query, [appointmentId], (err, results) => {
+        if (err) {
+            console.error('Error fetching tasks for appointment:', err);
+            return res.status(500).send('Error fetching tasks for appointment.');
+        }
+
+        res.json(results);
+    });
+});
 
   return router;
 };
+

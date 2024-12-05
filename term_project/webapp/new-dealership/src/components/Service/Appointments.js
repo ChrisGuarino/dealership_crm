@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAppointments } from '../../api';
+import { Link } from 'react-router-dom';
 
 const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
@@ -16,7 +17,9 @@ const Appointments = () => {
             <ul>
                 {appointments.map((appointment) => (
                     <li key={appointment.Appointment_ID}>
-                        Appointment #{appointment.Appointment_ID} - Car ID: {appointment.Car_ID}
+                        <Link to={`/service/appointments/${appointment.Appointment_ID}`}>
+                            Appointment #{appointment.Appointment_ID} - Car ID: {appointment.Car_ID}
+                        </Link>
                     </li>
                 ))}
             </ul>

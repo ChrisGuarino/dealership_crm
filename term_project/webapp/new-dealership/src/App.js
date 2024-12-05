@@ -25,11 +25,15 @@ import DeleteAppointment from './components/Service/DeleteAppointment';
 import PackageDetails from './components/Service/PackageDetails';
 import AssignVehicle from './components/Vehicles/AssignVehicle';
 import VehicleDetails from './components/Vehicles/VehicleDetails';
+import AppointmentDetails from './components/Service/AppointmentDetails';
+import LogWasPerformed from './components/Service/LogWasPerformed';
+import ServiceBill from './components/Service/ServiceBill';
 
 //Sales Management
 import SalesHome from './components/Sales/SalesHome';
 import SalesStats from './components/Sales/SalesStats';
 import Purchases from './components/Sales/PurchasedVehicles';
+
 
 
 const App = () => {
@@ -70,11 +74,15 @@ const App = () => {
                     {/* Service Department */}
                     <Route path="/service" element={<ServiceHome />} />
                     <Route path="/service/appointments" element={<Appointments />} />
+                    <Route path="/service/appointments/:id" element={<AppointmentDetails />} />
                     <Route path="/service/add-appointment" element={<AddAppointment />} />
                     <Route path="/service/delete-appointment" element={<DeleteAppointment />} />
                     <Route path="/service/packages" element={<Packages />} />
                     <Route path="/service/parts" element={<Parts />} />
                     <Route path="/service/packages/:packageId/details" element={<PackageDetails />} />
+                    <Route path="/service/was_performed" element={<LogWasPerformed />} />
+                    <Route path="/service/bill/:appointmentId" element={<ServiceBill />} />
+                    
 
                     {/* Sales Management */}
                     <Route path="/sales" element={<SalesHome />} />

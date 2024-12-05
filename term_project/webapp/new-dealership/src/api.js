@@ -6,17 +6,24 @@ const api = axios.create({
 //service.js calls
 //GET calls
 export const fetchAppointments = () => api.get('/service/appointments');
+export const fetchAppointmentDetails = (id) => api.get(`/service/appointments/${id}`);
 export const fetchCustomerAppointments = (customerID) => api.get(`/service/appointments/customer/${customerID}`);
 export const fetchPackages = () => api.get('/service/packages');
 export const fetchParts = () => api.get('/service/parts');
 export const fetchTotalCustomerCharge = (customerID) => api.get(`/service/appointments/customer/${customerID}/total`);
 export const fetchPackageDetails = (packageId) => api.get(`/service/packages/${packageId}/details`);
+export const fetchPartsForTask = (taskId) => api.get(`/service/tasks/${taskId}/parts`);
+export const fetchServiceBill = (appointmentId) => api.get(`/service/bill/${appointmentId}`);
+export const fetchTasksForAppointment = (appointmentId) => api.get(`/service/appointments/${appointmentId}/tasks`);
 
 export const fetchTasksInPackage = (packageID) => api.get(`/service/packages/${packageID}/tasks`);
 export const fetchPartsInPackage = (packageID) => api.get(`/service/packages/${packageID}/parts`);
 export const fetchAdditionalServices = () => api.get('/service/scheduled-services');
+export const fetchTasks = () => api.get('/service/tasks');
 //POST calls
 export const createAppointment = (data) => api.post('/service/appointments', data);
+export const logWasPerformed = (data) => api.post('/service/was_performed', data);
+export const logWasReplaced = (data) => api.post('/service/was_replaced', data);
 //DELETE calls
 export const deleteAppointment = (id) => api.delete(`/service/appointments/${id}`);
 export const deletePart = (id) => api.delete(`/service/parts/${id}`);
