@@ -6,7 +6,8 @@ DB_PASS="P@ssword"
 DB_HOST="localhost"
 
 # SQL file path
-SQL_FILE="/home/term_project/db/db_scema_loader.sql"
+SQLPATH=$(pwd)
+SQL_FILE="$SQLPATH/db_scema_loader.sql"
 
 # Run SQL file
 mysql -u "$DB_USER" -p"$DB_PASS" -h "$DB_HOST" < "$SQL_FILE"
