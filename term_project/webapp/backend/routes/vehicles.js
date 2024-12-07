@@ -242,9 +242,6 @@ router.post('/inventory/purchase', async (req, res) => {
         res.status(500).send('Error processing purchase.');
     }
 });
-
-
-
 // Get all purchases for a specific customer
 router.get('/purchases/customer/:customerId', (req, res) => {
   const { customerId } = req.params;
