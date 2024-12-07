@@ -27,9 +27,11 @@ const PurchasedVehicles = () => {
                     <li key={purchase.Purchase_ID}>
                         <p><strong>Purchase ID:</strong> {purchase.Purchase_ID}</p>
                         <p><strong>Date:</strong> {moment(purchase.Date_Of_Purchase).format("MMMM Do, YYYY")}</p>
-                        <p><strong>Sale Price:</strong> ${purchase.Sale_Price}</p>
                         <p><strong>Car:</strong> {purchase.Make} {purchase.Model} ({purchase.Year})</p>
                         <p><strong>Color:</strong> {purchase.Color}, Odometer: {purchase.Odometer} miles</p>
+                        <p><strong>Sale Price:</strong> ${purchase.Sale_Price}</p>
+                        <p><strong>Dealership Cost:</strong> ${purchase.Cost}</p>
+                        <p><strong>Dealership Profit:</strong> ${parseFloat(purchase.Sale_Price)-parseFloat(purchase.Cost)}</p>
                         <hr />
                     </li>
                 ))}

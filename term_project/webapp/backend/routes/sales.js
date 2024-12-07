@@ -11,6 +11,7 @@ module.exports = (db) => {
             Purchase.Purchase_ID,
             Purchase.Date_Of_Purchase,
             Purchase.Sale_Price,
+            Purchase.Cost,
             Car.Car_ID,
             Car.Color,
             Car.Odometer,
@@ -44,17 +45,15 @@ router.get('/stats', (req, res) => {
         SELECT 
             COUNT(Purchase.Purchase_ID) AS Number_of_Cars_Sold,
             COALESCE(SUM(Purchase.Sale_Price), 0) AS Total_Revenue,
-            COALESCE(SUM(Purchase.Sale_Price - Cars_In_Inventory.Cost), 0) AS Total_Profit,
+            COALESCE(SUM(Purchase.Sale_Price - Purchase.Cost), 0) AS Total_Profit,
             Vehicle_Type.Make,
             Vehicle_Type.Model,
             COUNT(Vehicle_Type.Vehicle_ID) AS Number_Sold_Per_Type,
-            COALESCE(SUM(Purchase.Sale_Price - Cars_In_Inventory.Cost), 0) AS Profit_Per_Type
+            COALESCE(SUM(Purchase.Sale_Price - Purchase.Cost), 0) AS Profit_Per_Type
         FROM 
             Purchase
         INNER JOIN 
             Car ON Purchase.Car_ID = Car.Car_ID
-        INNER JOIN 
-            Cars_In_Inventory ON Car.Car_ID = Cars_In_Inventory.Car_ID
         INNER JOIN 
             Vehicle_Type ON Car.Vehicle_ID = Vehicle_Type.Vehicle_ID
         WHERE 
@@ -70,9 +69,9 @@ router.get('/stats', (req, res) => {
         }
 
         // Summarize overall statistics
-        const totalCarsSold = results.reduce((sum, row) => sum + row.Number_Sold_Per_Type, 0);
-        const totalProfit = results.reduce((sum, row) => sum + row.Profit_Per_Type, 0);
-        const totalRevenue = results.reduce((sum, row) => sum + row.Total_Revenue, 0);
+        const totalCarsSold = results.reduce((sum, row) => parseFloat(sum) + parseFloat(row.Number_Sold_Per_Type), 0);
+        const totalProfit = results.reduce((sum, row) => parseFloat(sum) + parseFloat(row.Profit_Per_Type), 0);
+        const totalRevenue = results.reduce((sum, row) => parseFloat(sum) + parseFloat(row.Total_Revenue), 0);
 
         res.json({
             summary: {

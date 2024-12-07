@@ -162,13 +162,14 @@ router.delete('/inventory/:id', (req, res) => {
 });
 
 // Route to handle vehicle purchase
+// Route to handle vehicle purchase
 router.post('/inventory/purchase', async (req, res) => {
     const { Car_ID, Customer_ID, Date_Of_Purchase, Sale_Price } = req.body;
     console.log(req.body);
 
     // Validate input
     if (!Car_ID || !Customer_ID || !Date_Of_Purchase || !Sale_Price) {
-        console.log(`All fields are required. Car_ID: ${Car_ID}, Customer_ID: ${Customer_ID}, Date_ID: ${Date_Of_Purchase}, Price: ${Sale_Price}`);
+        console.log(`All fields are required. Car_ID: ${Car_ID}, Customer_ID: ${Customer_ID}, Date_Of_Purchase: ${Date_Of_Purchase}, Sale_Price: ${Sale_Price}`);
         return res.status(400).json({ error: 'All fields are required.' });
     }
 
@@ -176,7 +177,17 @@ router.post('/inventory/purchase', async (req, res) => {
         // Start a transaction
         await queryPromise('START TRANSACTION');
 
-        // Step 1: Remove the vehicle from Cars_In_Inventory
+        // Step 1: Fetch the vehicle's cost from Cars_In_Inventory
+        const getCostQuery = 'SELECT Cost FROM Cars_In_Inventory WHERE Car_ID = ?';
+        const costResult = await queryPromise(getCostQuery, [Car_ID]);
+
+        if (costResult.length === 0) {
+            throw new Error('Vehicle not found in inventory.');
+        }
+
+        const { Cost } = costResult[0];
+
+        // Step 2: Remove the vehicle from Cars_In_Inventory
         const removeFromInventoryQuery = 'DELETE FROM Cars_In_Inventory WHERE Car_ID = ?';
         const inventoryResults = await queryPromise(removeFromInventoryQuery, [Car_ID]);
 
@@ -184,7 +195,7 @@ router.post('/inventory/purchase', async (req, res) => {
             throw new Error('Vehicle not found in inventory.');
         }
 
-        // Step 2: Fetch the vehicle details from Car
+        // Step 3: Fetch the vehicle details from Car
         const getCarDetailsQuery = 'SELECT * FROM Car WHERE Car_ID = ?';
         const carDetails = await queryPromise(getCarDetailsQuery, [Car_ID]);
 
@@ -194,23 +205,23 @@ router.post('/inventory/purchase', async (req, res) => {
 
         const { Interior, Odometer, Color } = carDetails[0];
 
-        // Step 3: Add the vehicle to Customer_Cars
+        // Step 4: Add the vehicle to Customer_Cars
         const addToCustomerCarsQuery = `
             INSERT INTO Customer_Cars (Car_ID, Interior, Odometer, Color, License_Plate_State, License_Plate)
             VALUES (?, ?, ?, ?, NULL, NULL)
         `;
         await queryPromise(addToCustomerCarsQuery, [Car_ID, Interior, Odometer, Color]);
 
-        // Step 4: Add the ownership record to Owns
+        // Step 5: Add the ownership record to Owns
         const addToOwnsQuery = 'INSERT INTO Owns (Customer_ID, Car_ID) VALUES (?, ?)';
         await queryPromise(addToOwnsQuery, [Customer_ID, Car_ID]);
 
-        // Step 5: Log the purchase in the Purchase table
+        // Step 6: Log the purchase in the Purchase table, including the vehicle cost
         const logPurchaseQuery = `
-            INSERT INTO Purchase (Purchase_ID, Date_Of_Purchase, Sale_Price, Car_ID)
-            VALUES (NULL, ?, ?, ?)
+            INSERT INTO Purchase (Purchase_ID, Date_Of_Purchase, Sale_Price, Cost, Car_ID)
+            VALUES (NULL, ?, ?, ?, ?)
         `;
-        await queryPromise(logPurchaseQuery, [Date_Of_Purchase, Sale_Price, Car_ID]);
+        await queryPromise(logPurchaseQuery, [Date_Of_Purchase, Sale_Price, Cost, Car_ID]);
 
         // Commit the transaction
         await queryPromise('COMMIT');
@@ -231,6 +242,7 @@ router.post('/inventory/purchase', async (req, res) => {
         res.status(500).send('Error processing purchase.');
     }
 });
+
 
 
 // Get all purchases for a specific customer

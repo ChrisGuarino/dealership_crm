@@ -91,6 +91,7 @@ CREATE TABLE Purchase (
     Purchase_ID INT AUTO_INCREMENT PRIMARY KEY,
     Date_Of_Purchase DATE,
     Sale_Price DECIMAL(10, 2),
+    Cost DECIMAL(10, 2),
     Car_ID INT,
     FOREIGN KEY (Car_ID) REFERENCES Car(Car_ID)
 );
@@ -336,13 +337,13 @@ VALUES
 
 
 -- Populating Purchase table
-INSERT INTO Purchase (Date_Of_Purchase, Sale_Price, Car_ID)
+INSERT INTO Purchase (Date_Of_Purchase, Sale_Price, Cost, Car_ID)
 VALUES
-('2024-11-01', 25000.00, 1),
-('2024-11-02', 22000.00, 2),
-('2024-11-03', 27000.00, 3),
-('2024-11-04', 32000.00, 4),
-('2024-11-05', 20000.00, 5);
+('2024-11-01', 25000.00, 20000, 1),
+('2024-11-02', 22000.00, 18000, 2),
+('2024-11-03', 27000.00, 20000, 3),
+('2024-11-04', 32000.00, 25000, 4),
+('2024-11-05', 20000.00, 13000, 5);
 
 
 -- Populating Appointment table

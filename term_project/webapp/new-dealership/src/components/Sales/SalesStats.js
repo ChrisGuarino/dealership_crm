@@ -56,7 +56,7 @@ const SalesStats = () => {
                 <div>
                     <h2>Summary</h2>
                     <p><strong>Number of Cars Sold:</strong> {statistics.summary.Number_of_Cars_Sold}</p>
-                    <p><strong>Total Revenue:</strong> ${Number(statistics.summary.Total_Revenue).toFixed(2)}</p>
+                    <p><strong>Total Revenue:</strong> ${statistics.summary.Total_Revenue}</p>
                     <p><strong>Total Profit:</strong> ${Number(statistics.summary.Total_Profit).toFixed(2)}</p>
                     
                     <h2>Details by Vehicle Type</h2>
