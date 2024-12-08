@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { fetchSalesStatistics } from '../../api';
+import '../../styling/SalesStats.css';
 
 const SalesStats = () => {
     const [startDate, setStartDate] = useState('');
@@ -26,10 +27,10 @@ const SalesStats = () => {
     };
 
     return (
-        <div>
-            <h1>Sales Statistics</h1>
-            <form onSubmit={handleFetchStatistics}>
-                <label>
+        <div className="sales-stats-container">
+            <h1 className="title">Sales Statistics</h1>
+            <form className="sales-form" onSubmit={handleFetchStatistics}>
+                <label className="form-label">
                     Start Date:
                     <input 
                         type="date" 
@@ -38,8 +39,7 @@ const SalesStats = () => {
                         required 
                     />
                 </label>
-                <br />
-                <label>
+                <label className="form-label">
                     End Date:
                     <input 
                         type="date" 
@@ -48,19 +48,18 @@ const SalesStats = () => {
                         required 
                     />
                 </label>
-                <br />
-                <button type="submit">Fetch Statistics</button>
+                <button className="submit-button" type="submit">Fetch Statistics</button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p className="error-text">{error}</p>}
             {statistics && (
-                <div>
+                <div className="statistics-summary">
                     <h2>Summary</h2>
                     <p><strong>Number of Cars Sold:</strong> {statistics.summary.Number_of_Cars_Sold}</p>
                     <p><strong>Total Revenue:</strong> ${statistics.summary.Total_Revenue}</p>
                     <p><strong>Total Profit:</strong> ${Number(statistics.summary.Total_Profit).toFixed(2)}</p>
                     
                     <h2>Details by Vehicle Type</h2>
-                    <table>
+                    <table className="stats-table">
                         <thead>
                             <tr>
                                 <th>Make</th>

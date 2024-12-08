@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { addVehicleToInventory } from '../../api';
+import '../../styling/AddVehicle.css';
 
 const AddVehicle = () => {
     const [vehicle, setVehicle] = useState({
@@ -42,96 +43,125 @@ const AddVehicle = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Add Vehicle to Inventory</h1>
-            <input
-                type="text"
-                name="Make"
-                value={vehicle.Make}
-                onChange={handleChange}
-                placeholder="Make"
-                required
-            />
-            <input
-                type="text"
-                name="Model"
-                value={vehicle.Model}
-                onChange={handleChange}
-                placeholder="Model"
-                required
-            />
-            <input
-                type="text"
-                name="Tire_Type"
-                value={vehicle.Tire_Type}
-                onChange={handleChange}
-                placeholder="Tire Type"
-                required
-            />
-            <input
-                type="text"
-                name="Interior"
-                value={vehicle.Interior}
-                onChange={handleChange}
-                placeholder="Interior"
-                required
-            />
-            <input
-                type="number"
-                name="Odometer"
-                value={vehicle.Odometer}
-                onChange={handleChange}
-                placeholder="Odometer"
-                required
-            />
-            <select
-                name="Color"
-                value={vehicle.Color}
-                onChange={handleChange}
-                required
-            >
-                <option value="" disabled>
-                    Select Color
-                </option>
-                {colors.map((color) => (
-                    <option key={color} value={color}>
-                        {color}
-                    </option>
-                ))}
-            </select>
-            <select
-                name="Year"
-                value={vehicle.Year}
-                onChange={handleChange}
-                required
-            >
-                <option value="" disabled>
-                    Select Year
-                </option>
-                {years.map((year) => (
-                    <option key={year} value={year}>
-                        {year}
-                    </option>
-                ))}
-            </select>
-            <input
-                type="number"
-                name="Cost"
-                value={vehicle.Cost}
-                onChange={handleChange}
-                placeholder="Cost"
-                required
-            />
-            <input
-                type="text"
-                name="Engine_Type"
-                value={vehicle.Engine_Type}
-                onChange={handleChange}
-                placeholder="Engine Type"
-                required
-            />
-            <button type="submit">Add Vehicle</button>
-        </form>
+        <div className="add-vehicle-container">
+            <h1 className="title">Add Vehicle to Inventory</h1>
+            <form className="add-vehicle-form" onSubmit={handleSubmit}>
+                <label className="form-label">
+                    Make:
+                    <input
+                        type="text"
+                        name="Make"
+                        value={vehicle.Make}
+                        onChange={handleChange}
+                        placeholder="Make"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Model:
+                    <input
+                        type="text"
+                        name="Model"
+                        value={vehicle.Model}
+                        onChange={handleChange}
+                        placeholder="Model"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Tire Type:
+                    <input
+                        type="text"
+                        name="Tire_Type"
+                        value={vehicle.Tire_Type}
+                        onChange={handleChange}
+                        placeholder="Tire Type"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Interior:
+                    <input
+                        type="text"
+                        name="Interior"
+                        value={vehicle.Interior}
+                        onChange={handleChange}
+                        placeholder="Interior"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Odometer:
+                    <input
+                        type="number"
+                        name="Odometer"
+                        value={vehicle.Odometer}
+                        onChange={handleChange}
+                        placeholder="Odometer"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Color:
+                    <select
+                        name="Color"
+                        value={vehicle.Color}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="" disabled>
+                            Select Color
+                        </option>
+                        {colors.map((color) => (
+                            <option key={color} value={color}>
+                                {color}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label className="form-label">
+                    Year:
+                    <select
+                        name="Year"
+                        value={vehicle.Year}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="" disabled>
+                            Select Year
+                        </option>
+                        {years.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label className="form-label">
+                    Cost:
+                    <input
+                        type="number"
+                        name="Cost"
+                        value={vehicle.Cost}
+                        onChange={handleChange}
+                        placeholder="Cost"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    Engine Type:
+                    <input
+                        type="text"
+                        name="Engine_Type"
+                        value={vehicle.Engine_Type}
+                        onChange={handleChange}
+                        placeholder="Engine Type"
+                        required
+                    />
+                </label>
+                <button className="submit-button" type="submit">Add Vehicle</button>
+            </form>
+        </div>
     );
 };
 

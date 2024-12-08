@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createCustomer } from '../../api';
+import '../../styling/AddCustomer.css';
 
 const AddCustomer = () => {
     const [customer, setCustomer] = useState({
@@ -23,64 +24,67 @@ const AddCustomer = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-    <label>
-        <span>First Name:</span>
-        <input
-            type="text"
-            name="F_Name"
-            value={customer.F_Name}
-            onChange={handleChange}
-            placeholder="First Name"
-            required
-        />
-    </label>
-    <label>
-        <span>Last Name:</span>
-        <input
-            type="text"
-            name="L_Name"
-            value={customer.L_Name}
-            onChange={handleChange}
-            placeholder="Last Name"
-            required
-        />
-    </label>
-    <label>
-        <span>Phone:</span>
-        <input
-            type="text"
-            name="Phone"
-            value={customer.Phone}
-            onChange={handleChange}
-            placeholder="Phone"
-            required
-        />
-    </label>
-    <label>
-        <span>Email:</span>
-        <input
-            type="email"
-            name="Email"
-            value={customer.Email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-        />
-    </label>
-    <label>
-        <span>Address:</span>
-        <input
-            type="text"
-            name="Address"
-            value={customer.Address}
-            onChange={handleChange}
-            placeholder="Address"
-            required
-        />
-    </label>
-    <button type="submit">Add Customer</button>
-</form>
+        <div className="add-customer-container">
+            <h1 className="title">Add New Customer</h1>
+            <form className="add-customer-form" onSubmit={handleSubmit}>
+                <label className="form-label">
+                    <span>First Name:</span>
+                    <input
+                        type="text"
+                        name="F_Name"
+                        value={customer.F_Name}
+                        onChange={handleChange}
+                        placeholder="First Name"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    <span>Last Name:</span>
+                    <input
+                        type="text"
+                        name="L_Name"
+                        value={customer.L_Name}
+                        onChange={handleChange}
+                        placeholder="Last Name"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    <span>Phone:</span>
+                    <input
+                        type="text"
+                        name="Phone"
+                        value={customer.Phone}
+                        onChange={handleChange}
+                        placeholder="Phone"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    <span>Email:</span>
+                    <input
+                        type="email"
+                        name="Email"
+                        value={customer.Email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    <span>Address:</span>
+                    <input
+                        type="text"
+                        name="Address"
+                        value={customer.Address}
+                        onChange={handleChange}
+                        placeholder="Address"
+                        required
+                    />
+                </label>
+                <button className="submit-button" type="submit">Add Customer</button>
+            </form>
+        </div>
     );
 };
 

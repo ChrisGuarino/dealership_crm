@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchCustomers } from '../../api';
+import '../../styling/CustomersList.css';
 
 const CustomersList = () => {
     const [customers, setCustomers] = useState([]);
@@ -12,16 +13,23 @@ const CustomersList = () => {
     }, []);
 
     return (
-        <div>
-            <h1>Existing Customers</h1>
-            <ul>
-                {customers.map((customer) => (
-                    <li key={customer.Customer_ID}>
-                        <Link to={`/customers/${customer.Customer_ID}/details`}>
-                            {customer.F_Name} {customer.L_Name}
-                        </Link>
-                    </li>
-                ))}
+        <div className="customers-list-container">
+            <h1 className="title">Existing Customers</h1>
+            <ul className="customers-list">
+                {customers.length > 0 ? (
+                    customers.map((customer) => (
+                        <li key={customer.Customer_ID} className="customer-item">
+                            <Link
+                                to={`/customers/${customer.Customer_ID}/details`}
+                                className="customer-link"
+                            >
+                                {customer.F_Name} {customer.L_Name}
+                            </Link>
+                        </li>
+                    ))
+                ) : (
+                    <p className="no-customers">No customers available.</p>
+                )}
             </ul>
         </div>
     );

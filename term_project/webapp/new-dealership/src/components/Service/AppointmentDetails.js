@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchAppointmentDetails } from '../../api';
-import moment from "moment";
+import moment from 'moment';
+import '../../styling/AppointmentDetails.css';
 
 const AppointmentDetails = () => {
     const { id } = useParams(); // Get the appointment ID from the URL
@@ -14,29 +15,31 @@ const AppointmentDetails = () => {
     }, [id]);
 
     if (!appointment) {
-        return <p> {id} Loading appointment details... {id}</p>;
+        return <p className="loading-text">Loading appointment details...</p>;
     }
-    const formattedDropOff = moment(appointment.Drop_Off).format("MMMM Do, YYYY, h:mm A");
-    const formattedPickup = moment(appointment.Pick_Up).format("MMMM Do, YYYY, h:mm A");
-    const formattedDateMade = moment(appointment.Appointment_Made_Date).format("MMMM Do, YYYY");
+
+    const formattedDropOff = moment(appointment.Drop_Off).format('MMMM Do, YYYY, h:mm A');
+    const formattedPickup = moment(appointment.Pick_Up).format('MMMM Do, YYYY, h:mm A');
+    const formattedDateMade = moment(appointment.Appointment_Made_Date).format('MMMM Do, YYYY');
+
     return (
-        <div>
-            <h1>Appointment #{appointment.Appointment_ID}</h1>
-            <p>Car ID: {appointment.Car_ID}</p>
-            <p>Customer ID: {appointment.Customer_ID}</p>
-            <p>Drop Off: {formattedDropOff}</p>
-            <p>Pick Up: {formattedPickup}</p>
-            <p>Appointment Made Date: {formattedDateMade}</p>
-            <p>Package ID: {appointment.Package_ID}</p>
-            {/* Add more fields as needed */}
-            <h3>Actions</h3>
-            <ul>
+        <div className="appointment-details-container">
+            <h1 className="title">Appointment #{appointment.Appointment_ID}</h1>
+            <div className="appointment-info">
+                <p><strong>Car ID:</strong> {appointment.Car_ID}</p>
+                <p><strong>Customer ID:</strong> {appointment.Customer_ID}</p>
+                <p><strong>Drop Off:</strong> {formattedDropOff}</p>
+                <p><strong>Pick Up:</strong> {formattedPickup}</p>
+                <p><strong>Appointment Made Date:</strong> {formattedDateMade}</p>
+                <p><strong>Package ID:</strong> {appointment.Package_ID}</p>
+            </div>
+            <h3 className="actions-title">Actions</h3>
+            <ul className="actions-list">
                 <li>
-                    <Link to={`/service/bill/${appointment.Appointment_ID}`}>
+                    <Link to={`/service/bill/${appointment.Appointment_ID}`} className="action-link">
                         View Bill for This Appointment
                     </Link>
                 </li>
-                {/* Add other actions here if needed */}
             </ul>
         </div>
     );

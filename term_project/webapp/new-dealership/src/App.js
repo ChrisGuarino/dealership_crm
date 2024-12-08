@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
+import './styling/style.css';
+
 // Customer Management
 import CustomersHome from './components/Customers/CustomersHome';
 import CustomersList from './components/Customers/CustomersList';
@@ -29,21 +31,19 @@ import AppointmentDetails from './components/Service/AppointmentDetails';
 import LogWasPerformed from './components/Service/LogWasPerformed';
 import ServiceBill from './components/Service/ServiceBill';
 
-//Sales Management
+// Sales Management
 import SalesHome from './components/Sales/SalesHome';
 import SalesStats from './components/Sales/SalesStats';
 import Purchases from './components/Sales/PurchasedVehicles';
 
-
-
 const App = () => {
     return (
         <Router>
-            <div>
+            <div className="app-container">
                 {/* Main Navigation */}
-                <nav>
-                    <h1>Dealership Management</h1>
-                    <ul>
+                <nav className="main-nav">
+                    <h1 className="site-title">Dealership Management</h1>
+                    <ul className="nav-links">
                         <li><Link to="/customers">Customer Management</Link></li>
                         <li><Link to="/vehicles">Vehicle Management</Link></li>
                         <li><Link to="/service">Service Department</Link></li>
@@ -52,43 +52,47 @@ const App = () => {
                 </nav>
 
                 {/* Application Routes */}
-                <Routes>
-                    {/* Customer Management */}
-                    <Route path="/customers" element={<CustomersHome />} />
-                    <Route path="/customers/list" element={<CustomersList />} />
-                    <Route path="/customers/:customerId/details" element={<CustomerDetails />} />
-                    <Route path="/customers/add" element={<AddCustomer />} />
-                    <Route path="/customers/delete" element={<DeleteCustomer />} />
-                    
+                <main className="content">
+                    <Routes>
+                        {/* Customer Management */}
+                        <Route path="/customers" element={<CustomersHome />} />
+                        <Route path="/customers/list" element={<CustomersList />} />
+                        <Route path="/customers/:customerId/details" element={<CustomerDetails />} />
+                        <Route path="/customers/add" element={<AddCustomer />} />
+                        <Route path="/customers/delete" element={<DeleteCustomer />} />
 
-                    {/* Vehicle Management */}
-                    <Route path="/vehicles" element={<VehiclesHome />} />
-                    <Route path="/vehicles/inventory" element={<Inventory />} />
-                    <Route path="/vehicles/owned" element={<CustomerVehicles />} />
-                    <Route path="/vehicles/add" element={<AddVehicle />} />
-                    <Route path="/vehicles/delete" element={<DeleteVehicle />} />
-                    <Route path="/vehicles/purchase" element={<AssignVehicle />} />
-                    <Route path="/vehicles/:carId/details" element={<VehicleDetails />} />
-                    
+                        {/* Vehicle Management */}
+                        <Route path="/vehicles" element={<VehiclesHome />} />
+                        <Route path="/vehicles/inventory" element={<Inventory />} />
+                        <Route path="/vehicles/owned" element={<CustomerVehicles />} />
+                        <Route path="/vehicles/add" element={<AddVehicle />} />
+                        <Route path="/vehicles/delete" element={<DeleteVehicle />} />
+                        <Route path="/vehicles/purchase" element={<AssignVehicle />} />
+                        <Route path="/vehicles/:carId/details" element={<VehicleDetails />} />
 
-                    {/* Service Department */}
-                    <Route path="/service" element={<ServiceHome />} />
-                    <Route path="/service/appointments" element={<Appointments />} />
-                    <Route path="/service/appointments/:id" element={<AppointmentDetails />} />
-                    <Route path="/service/add-appointment" element={<AddAppointment />} />
-                    <Route path="/service/delete-appointment" element={<DeleteAppointment />} />
-                    <Route path="/service/packages" element={<Packages />} />
-                    <Route path="/service/parts" element={<Parts />} />
-                    <Route path="/service/packages/:packageId/details" element={<PackageDetails />} />
-                    <Route path="/service/was_performed" element={<LogWasPerformed />} />
-                    <Route path="/service/bill/:appointmentId" element={<ServiceBill />} />
-                    
+                        {/* Service Department */}
+                        <Route path="/service" element={<ServiceHome />} />
+                        <Route path="/service/appointments" element={<Appointments />} />
+                        <Route path="/service/appointments/:id" element={<AppointmentDetails />} />
+                        <Route path="/service/add-appointment" element={<AddAppointment />} />
+                        <Route path="/service/delete-appointment" element={<DeleteAppointment />} />
+                        <Route path="/service/packages" element={<Packages />} />
+                        <Route path="/service/parts" element={<Parts />} />
+                        <Route path="/service/packages/:packageId/details" element={<PackageDetails />} />
+                        <Route path="/service/was_performed" element={<LogWasPerformed />} />
+                        <Route path="/service/bill/:appointmentId" element={<ServiceBill />} />
 
-                    {/* Sales Management */}
-                    <Route path="/sales" element={<SalesHome />} />
-                    <Route path="/sales/stats" element={<SalesStats />} />
-                    <Route path="/sales/purchases" element={<Purchases />} />
-                </Routes>
+                        {/* Sales Management */}
+                        <Route path="/sales" element={<SalesHome />} />
+                        <Route path="/sales/stats" element={<SalesStats />} />
+                        <Route path="/sales/purchases" element={<Purchases />} />
+                    </Routes>
+                </main>
+
+                {/* Footer */}
+                <footer className="main-footer">
+                    &copy; {new Date().getFullYear()} Dealership Management. All Rights Reserved.
+                </footer>
             </div>
         </Router>
     );

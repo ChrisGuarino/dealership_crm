@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAppointments, fetchTasksForAppointment, fetchPartsForTask, logWasPerformed, logWasReplaced } from '../../api';
+import {
+    fetchAppointments,
+    fetchTasksForAppointment,
+    fetchPartsForTask,
+    logWasPerformed,
+    logWasReplaced,
+} from '../../api';
+import '../../styling/LogWasPerformed.css';
 
 const LogWasPerformed = () => {
     const [appointments, setAppointments] = useState([]);
@@ -16,14 +23,12 @@ const LogWasPerformed = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Fetch appointments for the first dropdown
         fetchAppointments()
             .then((response) => setAppointments(response.data))
             .catch((err) => console.error('Error fetching appointments:', err));
     }, []);
 
     useEffect(() => {
-        // Reset tasks and parts when appointment changes
         if (!form.appointmentId) {
             setTasks([]);
             setParts([]);
@@ -34,7 +39,6 @@ const LogWasPerformed = () => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
 
-        // Fetch tasks when an appointment is selected
         if (name === 'appointmentId' && value) {
             fetchTasksForAppointment(value)
                 .then((response) => setTasks(response.data))
@@ -44,7 +48,6 @@ const LogWasPerformed = () => {
                 });
         }
 
-        // Fetch parts when a task is selected
         if (name === 'taskId' && value) {
             fetchPartsForTask(value)
                 .then((response) => setParts(response.data))
@@ -72,10 +75,8 @@ const LogWasPerformed = () => {
             return;
         }
 
-        // Log the task in Was_Performed
         logWasPerformed({ appointmentId, taskId, laborCost, time })
             .then(() => {
-                // Log parts in Was_Replaced
                 if (selectedParts.length > 0) {
                     return logWasReplaced({ appointmentId, partIds: selectedParts });
                 }
@@ -95,12 +96,12 @@ const LogWasPerformed = () => {
     };
 
     return (
-        <div>
-            <h1>Log Performed Tasks and Parts</h1>
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-                <label>
+        <div className="log-task-container">
+            <h1 className="title">Log Performed Tasks and Parts</h1>
+            {message && <p className="message">{message}</p>}
+            {error && <p className="error">{error}</p>}
+            <form className="log-task-form" onSubmit={handleSubmit}>
+                <label className="form-label">
                     Select Appointment:
                     <select
                         name="appointmentId"
@@ -111,13 +112,13 @@ const LogWasPerformed = () => {
                         <option value="">-- Select an Appointment --</option>
                         {appointments.map((appt) => (
                             <option key={appt.Appointment_ID} value={appt.Appointment_ID}>
-                                Appointment #{appt.Appointment_ID} (Customer: {appt.Customer_Name})
+                                Appointment #{appt.Appointment_ID} (Customer: {appt.Customer_ID})
                             </option>
                         ))}
                     </select>
                 </label>
 
-                <label>
+                <label className="form-label">
                     Select Task:
                     <select
                         name="taskId"
@@ -135,7 +136,7 @@ const LogWasPerformed = () => {
                     </select>
                 </label>
 
-                <label>
+                <label className="form-label">
                     Labor Cost ($):
                     <input
                         type="number"
@@ -146,7 +147,7 @@ const LogWasPerformed = () => {
                     />
                 </label>
 
-                <label>
+                <label className="form-label">
                     Time (minutes):
                     <input
                         type="number"
@@ -157,30 +158,29 @@ const LogWasPerformed = () => {
                     />
                 </label>
 
-                <label>
+                <label className="form-label">
                     Select Parts Used:
-                    <ul>
-                        {parts.length > 0 ? (
-                            parts.map((part) => (
-                                <li key={part.Part_ID}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            value={part.Part_ID}
-                                            checked={selectedParts.includes(part.Part_ID)}
-                                            onChange={() => handlePartToggle(part.Part_ID)}
-                                        />
+                    <ul className="parts-list">
+                        {parts.map((part) => {
+                            const isSelected = selectedParts.includes(part.Part_ID);
+                            return (
+                                <li key={part.Part_ID} className="part-item">
+                                    <button
+                                        type="button"
+                                        className={`toggle-btn ${isSelected ? 'active' : ''}`}
+                                        onClick={() => handlePartToggle(part.Part_ID)}
+                                    >
                                         {part.Name} (${Number(part.Cost_Of_Part).toFixed(2)})
-                                    </label>
+                                    </button>
                                 </li>
-                            ))
-                        ) : (
-                            <li>No parts available for the selected task.</li>
-                        )}
+                            );
+                        })}
                     </ul>
                 </label>
 
-                <button type="submit">Log Task and Parts</button>
+                <button className="submit-button" type="submit">
+                    Log Task and Parts
+                </button>
             </form>
         </div>
     );

@@ -1,0 +1,61 @@
+/* Container Styling */
+.purchased-vehicles-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Error Text */
+.error-text {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Purchases List */
+.purchases-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Purchase Item */
+.purchase-item {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Styling */
+.purchase-item p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.purchase-item strong {
+    color: #555;
+}
+
+/* Separator */
+.purchase-item hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 1rem 0 0 0;
+}

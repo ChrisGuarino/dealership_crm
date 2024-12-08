@@ -1,16 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../../styling/SalesHome.css';
 
 const SalesHome = () => {
     return (
-        <div>
-            <h1>Sales Management</h1>
-            <p>Manage sales information,track purchases, and sales history.</p>
-            
-            <nav>
-                <ul>
-                    <li><Link to="/sales/purchases">View Purchases</Link></li>
-                    <li><Link to="/sales/stats">View Stats</Link></li>
+        <div className="sales-home-container">
+            <h1 className="title">Sales Management</h1>
+            <p className="description">
+                Manage sales information, track purchases, and review sales history.
+            </p>
+
+            <nav className="sales-nav">
+                <ul className="nav-list">
+                    <li className="nav-item">
+                        <Link to="/sales/purchases" className="nav-link">
+                            View Purchases
+                        </Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to="/sales/stats" className="nav-link">
+                            View Stats
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </div>

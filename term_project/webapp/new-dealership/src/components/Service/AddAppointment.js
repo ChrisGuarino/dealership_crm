@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createAppointment, fetchCustomerVehicles, fetchCustomers, fetchPackages, fetchTasks } from '../../api';
+import '../../styling/AddAppointment.css';
 
 const AddAppointment = () => {
     const [appointment, setAppointment] = useState({
@@ -18,7 +19,7 @@ const AddAppointment = () => {
     const [customers, setCustomers] = useState([]);
     const [packages, setPackages] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [selectedTasks, setSelectedTasks] = useState([]); // Track additional tasks
+    const [selectedTasks, setSelectedTasks] = useState([]);
 
     useEffect(() => {
         fetchCustomerVehicles()
@@ -75,7 +76,7 @@ const AddAppointment = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
+        <form onSubmit={handleSubmit} className="add-appointment-form">
             <h1>Add Service Appointment</h1>
 
             <label>
@@ -181,23 +182,24 @@ const AddAppointment = () => {
             </label>
 
             <h3>Additional Tasks (Optional)</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-                {tasks.map((task) => (
-                    <li key={task.Task_ID}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                value={task.Task_ID}
-                                checked={selectedTasks.includes(task.Task_ID)}
-                                onChange={() => handleTaskToggle(task.Task_ID)}
-                            />
-                            {task.Name}
-                        </label>
-                    </li>
-                ))}
+            <ul className="tasks-list">
+                {tasks.map((task) => {
+                    const isSelected = selectedTasks.includes(task.Task_ID);
+                    return (
+                        <li key={task.Task_ID} className="task-item">
+                            <button
+                                type="button"
+                                className={`toggle-btn ${isSelected ? 'active' : ''}`}
+                                onClick={() => handleTaskToggle(task.Task_ID)}
+                            >
+                                {task.Name}
+                            </button>
+                        </li>
+                    );
+                })}
             </ul>
 
-            <button type="submit" style={{ marginTop: '1rem', padding: '0.5rem', backgroundColor: '#007BFF', color: 'white', border: 'none', cursor: 'pointer' }}>
+            <button type="submit" className="submit-btn">
                 Add Appointment
             </button>
         </form>

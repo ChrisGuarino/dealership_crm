@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchServiceBill } from '../../api';
-
+import '../../styling/ServiceBill.css';
 
 const ServiceBill = () => {
     const { appointmentId } = useParams();
@@ -18,37 +18,39 @@ const ServiceBill = () => {
     }, [appointmentId]);
 
     if (error) {
-        return <p style={{ color: 'red' }}>{error}</p>;
+        return <p className="error-text">{error}</p>;
     }
 
     if (!bill) {
-        return <p>Loading bill details...</p>;
+        return <p className="loading-text">Loading bill details...</p>;
     }
 
     return (
-        <div>
-            <h1>Service Bill</h1>
-            <h2>Appointment ID: {appointmentId}</h2>
-            <h3>Tasks Performed</h3>
-            <ul>
+        <div className="service-bill-container">
+            <h1 className="title">Service Bill</h1>
+            <h2 className="subtitle">Appointment ID: {appointmentId}</h2>
+            <h3 className="section-title">Tasks Performed</h3>
+            <ul className="bill-list">
                 {bill.tasks.map((task) => (
-                    <li key={task.Task_ID}>
-                        {task.Task_Name} - Labor Cost: ${Number(task.Labor_Cost).toFixed(2)}, Time: {task.Time} minutes
+                    <li key={task.Task_ID} className="bill-item">
+                        <strong>{task.Task_Name}</strong> - Labor Cost: ${Number(task.Labor_Cost).toFixed(2)}, Time: {task.Time} minutes
                     </li>
                 ))}
             </ul>
-            <h3>Parts Used</h3>
-            <ul>
+            <h3 className="section-title">Parts Used</h3>
+            <ul className="bill-list">
                 {bill.parts.map((part) => (
-                    <li key={part.Part_ID}>
-                        {part.Part_Name} - Cost: ${Number(part.Cost_Of_Part).toFixed(2)}
+                    <li key={part.Part_ID} className="bill-item">
+                        <strong>{part.Part_Name}</strong> - Cost: ${Number(part.Cost_Of_Part).toFixed(2)}
                     </li>
                 ))}
             </ul>
-            <h3>Totals</h3>
-            <p><strong>Total Labor Cost:</strong> ${Number(bill.totalLaborCost).toFixed(2)}</p>
-            <p><strong>Total Part Cost:</strong> ${Number(bill.totalPartCost).toFixed(2)}</p>
-            <p><strong>Total Cost:</strong> ${Number(bill.totalCost).toFixed(2)}</p>
+            <h3 className="section-title">Totals</h3>
+            <div className="totals">
+                <p><strong>Total Labor Cost:</strong> ${Number(bill.totalLaborCost).toFixed(2)}</p>
+                <p><strong>Total Part Cost:</strong> ${Number(bill.totalPartCost).toFixed(2)}</p>
+                <p><strong>Total Cost:</strong> ${Number(bill.totalCost).toFixed(2)}</p>
+            </div>
         </div>
     );
 };

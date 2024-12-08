@@ -1,0 +1,43 @@
+/* Container Styling */
+.parts-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 2rem;
+}
+
+/* Parts List */
+.parts-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.part-item {
+    font-size: 1.2rem;
+    color: #333;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.part-item:last-child {
+    border-bottom: none;
+}
+
+/* No Parts Message */
+.no-parts {
+    font-size: 1.2rem;
+    color: #555;
+}

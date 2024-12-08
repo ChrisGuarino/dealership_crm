@@ -1,0 +1,46 @@
+/* Container Styling */
+.appointments-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 2rem;
+}
+
+/* Appointments List */
+.appointments-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.appointment-item {
+    margin-bottom: 1rem;
+}
+
+.appointment-link {
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+.appointment-link:hover {
+    color: #0056b3;
+}
+
+/* No Appointments Message */
+.no-appointments {
+    font-size: 1.2rem;
+    color: #555;
+}

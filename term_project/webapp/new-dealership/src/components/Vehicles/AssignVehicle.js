@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchVehiclesInInventory, fetchCustomers, assignVehicleToCustomer } from '../../api';
+import '../../styling/AssignVehicle.css';
 
 const AssignVehicle = () => {
     const [vehicles, setVehicles] = useState([]);
@@ -40,10 +41,10 @@ const AssignVehicle = () => {
     };
 
     return (
-        <div>
-            <h1>Assign Vehicle to Customer</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
+        <div className="assign-vehicle-container">
+            <h1 className="title">Assign Vehicle to Customer</h1>
+            <form className="assign-vehicle-form" onSubmit={handleSubmit}>
+                <label className="form-label">
                     Select Vehicle:
                     <select name="Car_ID" value={form.Car_ID} onChange={handleChange} required>
                         <option value="">-- Select a Vehicle --</option>
@@ -54,8 +55,7 @@ const AssignVehicle = () => {
                         ))}
                     </select>
                 </label>
-                <br />
-                <label>
+                <label className="form-label">
                     Select Customer:
                     <select name="Customer_ID" value={form.Customer_ID} onChange={handleChange} required>
                         <option value="">-- Select a Customer --</option>
@@ -66,8 +66,7 @@ const AssignVehicle = () => {
                         ))}
                     </select>
                 </label>
-                <br />
-                <label>
+                <label className="form-label">
                     Purchase Date:
                     <input
                         type="date"
@@ -77,8 +76,7 @@ const AssignVehicle = () => {
                         required
                     />
                 </label>
-                <br />
-                <label>
+                <label className="form-label">
                     Sale Price:
                     <input
                         type="number"
@@ -90,8 +88,7 @@ const AssignVehicle = () => {
                         required
                     />
                 </label>
-                <br />
-                <button type="submit">Assign Vehicle</button>
+                <button className="submit-button" type="submit">Assign Vehicle</button>
             </form>
         </div>
     );
