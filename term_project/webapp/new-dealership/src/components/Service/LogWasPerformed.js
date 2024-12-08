@@ -19,6 +19,7 @@ const LogWasPerformed = () => {
         time: '',
     });
     const [selectedParts, setSelectedParts] = useState([]);
+    const [selectedTaskDetails, setSelectedTaskDetails] = useState(null); // Store selected task details
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
@@ -49,12 +50,22 @@ const LogWasPerformed = () => {
         }
 
         if (name === 'taskId' && value) {
+            // Fetch parts for the selected task
             fetchPartsForTask(value)
                 .then((response) => setParts(response.data))
                 .catch((err) => {
                     console.error('Error fetching parts for task:', err);
                     setParts([]);
                 });
+
+            // Update the selected task details
+            const selectedTask = tasks.find((task) => task.Task_ID === parseInt(value, 10));
+            if (selectedTask) {
+                setSelectedTaskDetails({
+                    Estd_Labor_Cost: selectedTask.Estd_Labor_Cost,
+                    Estd_Time: selectedTask.Estd_Time,
+                });
+            }
         }
     };
 
@@ -88,6 +99,7 @@ const LogWasPerformed = () => {
                 setSelectedParts([]);
                 setTasks([]);
                 setParts([]);
+                setSelectedTaskDetails(null); // Reset task details
             })
             .catch((err) => {
                 console.error('Error logging task or parts:', err);
@@ -135,6 +147,14 @@ const LogWasPerformed = () => {
                         ))}
                     </select>
                 </label>
+
+                {/* Display estimated cost and time if a task is selected */}
+                {selectedTaskDetails && (
+                    <div className="task-details">
+                        <p><strong>Estimated Labor Cost:</strong> ${selectedTaskDetails.Estd_Labor_Cost}</p>
+                        <p><strong>Estimated Time:</strong> {selectedTaskDetails.Estd_Time} minutes</p>
+                    </div>
+                )}
 
                 <label className="form-label">
                     Labor Cost ($):
