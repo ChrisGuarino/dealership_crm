@@ -4,7 +4,7 @@ const express = require("express");
 module.exports = (db) => {
   const router = express.Router();
 
-// Helper function to make `db.query` return a Promise
+// Helper function to make `db.query` return a Promise, this is used for flow control.
 const queryPromise = (query, params = []) => {
     return new Promise((resolve, reject) => {
         db.query(query, params, (err, results) => {
@@ -16,7 +16,7 @@ const queryPromise = (query, params = []) => {
     });
 };
 
-  // Get all service appointments
+// Get all service appointments
 router.get('/appointments', (req, res) => {
     const query=`
     SELECT 
@@ -37,7 +37,32 @@ router.get('/appointments', (req, res) => {
 // Get specific appointments
 router.get('/appointments/:id', (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT * FROM Appointment WHERE Appointment_ID = ?';
+    const query = `SELECT 
+          Appointment.Appointment_ID,
+          Appointment.Drop_Off,
+          Appointment.Pick_Up,
+          Appointment.Appointment_Made_Date,
+          Appointment.Car_ID,
+          Time_Slot.Time_Slot_ID,
+          Time_Slot.Start_Time,
+          Time_Slot.End_Time,
+          Time_Slot.Date AS Appointment_Date,
+          Package.Package_ID,
+          Package.Name AS Package_Name,
+          Customers.Customer_ID,
+          Customers.F_Name,
+          Customers.L_Name
+      FROM 
+          Appointment
+      JOIN 
+          Customers ON Appointment.Customer_ID = Customers.Customer_ID
+      JOIN 
+          Time_Slot ON Appointment.Time_Slot_ID = Time_Slot.Time_Slot_ID
+      JOIN 
+          Package ON Appointment.Package_ID = Package.Package_ID
+      WHERE 
+          Appointment.Appointment_ID = ?;
+  `;
     db.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error fetching appointment details:', err);
@@ -46,7 +71,6 @@ router.get('/appointments/:id', (req, res) => {
         res.json(results[0]);
     });
 });
-
 
 // Get all service packages
 router.get('/packages', (req, res) => {
@@ -72,7 +96,7 @@ router.get('/parts', (req, res) => {
   });
 });
 
-//Add/Schedule Service Appointment
+//Schedule Service Appointment
 router.post('/appointments', (req, res) => {
     const {
         Start_Time,
@@ -137,35 +161,6 @@ router.post('/appointments', (req, res) => {
             console.error('Database error:', err);
             res.status(500).send('Error adding appointment.');
         });
-});
-
-
-
-
-// Delete a service appointment by ID
-router.delete('/appointments/:id', (req, res) => {
-  const { id } = req.params;
-
-  // Check if the ID is provided
-  if (!id) {
-      return res.status(400).json({ error: 'Appointment ID is required.' });
-  }
-
-  const query = 'DELETE FROM Appointment WHERE Appointment_ID = ?';
-
-  db.query(query, [id], (err, results) => {
-      if (err) {
-          console.error('Error deleting appointment:', err);
-          return res.status(500).send('Error deleting appointment.');
-      }
-
-      // Check if an appointment was deleted
-      if (results.affectedRows === 0) {
-          return res.status(404).json({ error: 'Appointment not found.' });
-      }
-
-      res.status(200).json({ message: 'Appointment deleted successfully.' });
-  });
 });
 
 // Get all service appointments for a specific customer
@@ -432,6 +427,7 @@ router.get('/packages/:packageId/details', (req, res) => {
     });
 });
 
+//Log the tasks that were performed
 router.post('/was_performed', (req, res) => {
     const { appointmentId, taskId, laborCost, time } = req.body;
 
@@ -454,6 +450,7 @@ router.post('/was_performed', (req, res) => {
     });
 });
 
+//Log the parts that were replaced
 router.post('/was_replaced', (req, res) => {
     const { appointmentId, partIds } = req.body;
 
@@ -479,6 +476,7 @@ router.post('/was_replaced', (req, res) => {
     });
 });
 
+//Get all parts used in a specific task
 router.get('/tasks/:taskId/parts', (req, res) => {
     const { taskId } = req.params;
 
@@ -505,69 +503,7 @@ router.get('/tasks/:taskId/parts', (req, res) => {
     });
 });
 
-// router.get('/bill/:appointmentId', (req, res) => {
-//     const { appointmentId } = req.params;
-
-//     const query = `
-//         SELECT 
-//             Was_Performed.Task_ID,
-//             Task.Name AS Task_Name,
-//             Was_Performed.Labor_Cost,
-//             Was_Performed.Time,
-//             Part.Part_ID,
-//             Part.Name AS Part_Name,
-//             Part.Cost_Of_Part
-//         FROM 
-//             Appointment
-//         LEFT JOIN 
-//             Was_Performed ON Appointment.Appointment_ID = Was_Performed.Appointment_ID
-//         LEFT JOIN 
-//             Task ON Was_Performed.Task_ID = Task.Task_ID
-//         LEFT JOIN 
-//             Was_Replaced ON Appointment.Appointment_ID = Was_Replaced.Appointment_ID
-//         LEFT JOIN 
-//             Part ON Was_Replaced.Part_ID = Part.Part_ID
-//         WHERE 
-//             Appointment.Appointment_ID = ?;
-//     `;
-
-//     db.query(query, [appointmentId], (err, results) => {
-//         if (err) {
-//             console.error('Error fetching bill details:', err);
-//             return res.status(500).send('Error fetching bill details.');
-//         }
-
-//         if (results.length === 0) {
-//             return res.status(404).json({ error: 'No data found for the given appointment.' });
-//         }
-
-//         // Calculate total labor cost and part cost
-//         const tasks = results.filter((row) => row.Task_ID).map((row) => ({
-//             Task_ID: row.Task_ID,
-//             Task_Name: row.Task_Name,
-//             Labor_Cost: row.Labor_Cost,
-//             Time: row.Time,
-//         }));
-
-//         const parts = results.filter((row) => row.Part_ID).map((row) => ({
-//             Part_ID: row.Part_ID,
-//             Part_Name: row.Part_Name,
-//             Cost_Of_Part: row.Cost_Of_Part,
-//         }));
-
-//         const totalLaborCost = tasks.reduce((acc, task) => acc + (parseFloat(task.Labor_Cost) || 0), 0);
-//         const totalPartCost = parts.reduce((acc, part) => acc + (parseFloat(part.Cost_Of_Part) || 0), 0);
-//         const totalCost = parseFloat(totalLaborCost) + parseFloat(totalPartCost);
-//         res.json({
-//             tasks,
-//             parts,
-//             totalLaborCost,
-//             totalPartCost,
-//             totalCost,
-//         });
-//     });
-// });
-
+//Get bill for service appointment
 router.get('/bill/:appointmentId', async (req, res) => {
     const { appointmentId } = req.params;
 
@@ -640,13 +576,16 @@ router.get('/bill/:appointmentId', async (req, res) => {
     }
 });
 
+//Get all tasks that need to be done during an appointment
 router.get('/appointments/:appointmentId/tasks', (req, res) => {
     const { appointmentId } = req.params;
 
     const query = `
         SELECT DISTINCT
             Task.Task_ID,
-            Task.Name
+            Task.Name,
+            Task.Estd_Labor_Cost,
+            Task.Estd_Time
         FROM
             Appointment
         LEFT JOIN Package ON Appointment.Package_ID = Package.Package_ID

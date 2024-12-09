@@ -10,7 +10,17 @@ const AssignVehicle = () => {
         Customer_ID: '',
         Date_Of_Purchase: '',
         Sale_Price: '',
+        License_Plate_State: '',
+        License_Plate: '',
     });
+
+    const states = [
+        'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+        'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+        'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+        'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+        'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+    ];
 
     // Fetch vehicles and customers when the component mounts
     useEffect(() => {
@@ -35,7 +45,14 @@ const AssignVehicle = () => {
         assignVehicleToCustomer(form)
             .then(() => {
                 alert('Vehicle successfully assigned to customer!');
-                setForm({ Car_ID: '', Customer_ID: '', Date_Of_Purchase: '', Sale_Price: '' });
+                setForm({
+                    Car_ID: '',
+                    Customer_ID: '',
+                    Date_Of_Purchase: '',
+                    Sale_Price: '',
+                    License_Plate_State: '',
+                    License_Plate: '',
+                });
             })
             .catch((err) => console.error('Error assigning vehicle:', err));
     };
@@ -50,7 +67,7 @@ const AssignVehicle = () => {
                         <option value="">-- Select a Vehicle --</option>
                         {vehicles.map((vehicle) => (
                             <option key={vehicle.Car_ID} value={vehicle.Car_ID}>
-                                {vehicle.Color} {vehicle.Interior} (ID: {vehicle.Car_ID})
+                                {vehicle.Color} {vehicle.Make} {vehicle.Model} (ID: {vehicle.Car_ID})
                             </option>
                         ))}
                     </select>
@@ -85,6 +102,26 @@ const AssignVehicle = () => {
                         onChange={handleChange}
                         step="0.01"
                         placeholder="Enter sale price"
+                        required
+                    />
+                </label>
+                <label className="form-label">
+                    License Plate State:
+                    <select name="License_Plate_State" value={form.License_Plate_State} onChange={handleChange} required>
+                        <option value="">-- Select a State --</option>
+                        {states.map((state) => (
+                            <option key={state} value={state}>{state}</option>
+                        ))}
+                    </select>
+                </label>
+                <label className="form-label">
+                    License Plate Number:
+                    <input
+                        type="text"
+                        name="License_Plate"
+                        value={form.License_Plate}
+                        onChange={handleChange}
+                        placeholder="Enter license plate number"
                         required
                     />
                 </label>

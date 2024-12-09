@@ -28,11 +28,6 @@ const VehiclesHome = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/vehicles/delete" className="nav-link">
-                            Delete Vehicle from Inventory
-                        </Link>
-                    </li>
-                    <li className="nav-item">
                         <Link to="/vehicles/purchase" className="nav-link">
                             Assign Vehicle to Customer
                         </Link>

@@ -18,9 +18,6 @@ const CustomersHome = () => {
                     <li className="nav-item">
                         <Link to="/customers/list" className="nav-link">View Existing Customers</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/customers/delete" className="nav-link">Delete a Customer</Link>
-                    </li>
                 </ul>
             </nav>
         </div>

@@ -30,6 +30,7 @@ const VehicleDetails = () => {
                 <p><strong>Year:</strong> {vehicle.Year}</p>
                 <p><strong>Tire Type:</strong> {vehicle.Tire_Type}</p>
                 <p><strong>Engine Type:</strong> {vehicle.Engine_Type}</p>
+                <p><strong>Dealership Cost:</strong> ${vehicle.Cost}</p>
             </div>
         </div>
     );

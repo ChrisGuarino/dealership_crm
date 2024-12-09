@@ -55,4 +55,5 @@ export const deleteCustomer = (id) => api.delete(`/customers/${id}`);
 //sales.js calls
 export const fetchSalesStatistics = (startDate, endDate) => api.get('/sales/stats', { params: { startDate, endDate } });
 export const fetchPurchasedVehicles = (startDate, endDate) => api.get('/sales/purchases');
+export const fetchPurchaseDetails = (purchaseId) => api.get(`/sales/purchase/${purchaseId}/bill`);
 export default api;

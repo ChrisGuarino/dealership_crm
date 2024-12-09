@@ -23,11 +23,6 @@ const ServiceHome = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/service/delete-appointment" className="nav-link">
-                            Delete Appointment
-                        </Link>
-                    </li>
-                    <li className="nav-item">
                         <Link to="/service/packages" className="nav-link">
                             View Service Packages
                         </Link>

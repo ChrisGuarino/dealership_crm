@@ -4,17 +4,17 @@ const express = require("express");
 module.exports = (db) => {
   const router = express.Router();
 
-      // Helper function to make `db.query` return a Promise
-      const queryPromise = (query, params = []) => {
-        return new Promise((resolve, reject) => {
-            db.query(query, params, (err, results) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(results);
-            });
-        });
-    };
+// Helper function to make `db.query` return a Promise, this is used for flow control.
+const queryPromise = (query, params = []) => {
+    return new Promise((resolve, reject) => {
+    db.query(query, params, (err, results) => {
+        if (err) {
+            return reject(err);
+        }
+        resolve(results);
+    });
+});
+};
 
 // Get all vehicles in inventory with details from Vehicle_Type
 router.get('/inventory', (req, res) => {
@@ -134,42 +134,14 @@ router.post('/inventory', (req, res) => {
         });
 });
 
-// Delete a car from inventory by ID
-
-router.delete('/inventory/:id', (req, res) => {
-  const { id } = req.params;
-
-  // Check if the ID is provided
-  if (!id) {
-      return res.status(400).json({ error: 'Car ID is required.' });
-  }
-
-  const query = 'DELETE FROM Cars_In_Inventory WHERE Car_ID = ?';
-
-  db.query(query, [id], (err, results) => {
-      if (err) {
-          console.error('Error deleting car from inventory:', err);
-          return res.status(500).send('Error deleting car from inventory.');
-      }
-
-      // Check if a car was deleted
-      if (results.affectedRows === 0) {
-          return res.status(404).json({ error: 'Car not found in inventory.' });
-      }
-
-      res.status(200).json({ message: 'Car deleted from inventory successfully.' });
-  });
-});
-
-// Route to handle vehicle purchase
-// Route to handle vehicle purchase
+//Handle vehicle purchase
 router.post('/inventory/purchase', async (req, res) => {
-    const { Car_ID, Customer_ID, Date_Of_Purchase, Sale_Price } = req.body;
+    const { Car_ID, Customer_ID, Date_Of_Purchase, Sale_Price, License_Plate_State, License_Plate } = req.body;
     console.log(req.body);
 
     // Validate input
-    if (!Car_ID || !Customer_ID || !Date_Of_Purchase || !Sale_Price) {
-        console.log(`All fields are required. Car_ID: ${Car_ID}, Customer_ID: ${Customer_ID}, Date_Of_Purchase: ${Date_Of_Purchase}, Sale_Price: ${Sale_Price}`);
+    if (!Car_ID || !Customer_ID || !Date_Of_Purchase || !Sale_Price || !License_Plate_State || !License_Plate) {
+        console.log(`All fields are required. Car_ID: ${Car_ID}, Customer_ID: ${Customer_ID}, Date_Of_Purchase: ${Date_Of_Purchase}, Sale_Price: ${Sale_Price}, License_Plate_State: ${License_Plate_State}, License_Plate: ${License_Plate}`);
         return res.status(400).json({ error: 'All fields are required.' });
     }
 
@@ -208,9 +180,9 @@ router.post('/inventory/purchase', async (req, res) => {
         // Step 4: Add the vehicle to Customer_Cars
         const addToCustomerCarsQuery = `
             INSERT INTO Customer_Cars (Car_ID, Interior, Odometer, Color, License_Plate_State, License_Plate)
-            VALUES (?, ?, ?, ?, NULL, NULL)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
-        await queryPromise(addToCustomerCarsQuery, [Car_ID, Interior, Odometer, Color]);
+        await queryPromise(addToCustomerCarsQuery, [Car_ID, Interior, Odometer, Color, License_Plate_State, License_Plate]);
 
         // Step 5: Add the ownership record to Owns
         const addToOwnsQuery = 'INSERT INTO Owns (Customer_ID, Car_ID) VALUES (?, ?)';
@@ -332,6 +304,7 @@ router.get('/purchases/customer/:customerId/total', (req, res) => {
   });
 });
 
+//Get details of specific car
 router.get('/:carId/details', (req, res) => {
     const { carId } = req.params;
 
@@ -341,6 +314,7 @@ router.get('/:carId/details', (req, res) => {
             Car.Interior,
             Car.Odometer,
             Car.Color,
+            Cars_In_Inventory.Cost,
             Vehicle_Type.Make,
             Vehicle_Type.Model,
             Vehicle_Type.Year,
@@ -350,6 +324,8 @@ router.get('/:carId/details', (req, res) => {
             Car
         INNER JOIN 
             Vehicle_Type ON Car.Vehicle_ID = Vehicle_Type.Vehicle_ID
+        INNER JOIN 
+            Cars_In_Inventory ON Car.Car_ID = Cars_In_Inventory.Car_ID            
         WHERE 
             Car.Car_ID = ?;
     `;

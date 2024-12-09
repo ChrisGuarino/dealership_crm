@@ -27,11 +27,11 @@ const AppointmentDetails = () => {
             <h1 className="title">Appointment #{appointment.Appointment_ID}</h1>
             <div className="appointment-info">
                 <p><strong>Car ID:</strong> {appointment.Car_ID}</p>
-                <p><strong>Customer ID:</strong> {appointment.Customer_ID}</p>
+                <p><strong>Customer:</strong> {appointment.F_Name} {appointment.L_Name} (ID: {appointment.Customer_ID})</p>
                 <p><strong>Drop Off:</strong> {formattedDropOff}</p>
                 <p><strong>Pick Up:</strong> {formattedPickup}</p>
                 <p><strong>Appointment Made Date:</strong> {formattedDateMade}</p>
-                <p><strong>Package ID:</strong> {appointment.Package_ID}</p>
+                <p><strong>Package:</strong> {appointment.Package_Name} (ID: {appointment.Package_ID})</p>
             </div>
             <h3 className="actions-title">Actions</h3>
             <ul className="actions-list">

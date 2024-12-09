@@ -1,0 +1,57 @@
+.bill-page {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.bill-page h1 {
+    color: #007BFF;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.bill-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.bill-container h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.bill-item {
+    font-size: 1rem;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.bill-item strong {
+    color: #555;
+}
+
+.profit {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.error-message {
+    color: red;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.loading-message {
+    color: #007BFF;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}

@@ -124,7 +124,7 @@ const LogWasPerformed = () => {
                         <option value="">-- Select an Appointment --</option>
                         {appointments.map((appt) => (
                             <option key={appt.Appointment_ID} value={appt.Appointment_ID}>
-                                Appointment #{appt.Appointment_ID} (Customer: {appt.Customer_ID})
+                                Appointment #{appt.Appointment_ID} (Customer ID: {appt.Customer_ID})
                             </option>
                         ))}
                     </select>

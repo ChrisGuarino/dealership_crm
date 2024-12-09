@@ -4,8 +4,8 @@ const express = require("express");
 module.exports = (db) => {
   const router = express.Router();
 
-  // Get all sales.
-  router.get('/purchases', (req, res) => {
+// Get all sales.
+router.get('/purchases', (req, res) => {
     const query = `
         SELECT 
             Purchase.Purchase_ID,
@@ -35,9 +35,7 @@ module.exports = (db) => {
     });
 });
 
-
-  // Get all sales statistics over period of time.
-  // Get all sales statistics over a period of time.
+// Get all sales statistics over a period of time.
 router.get('/stats', (req, res) => {
     const { startDate, endDate } = req.query;
 
@@ -84,7 +82,48 @@ router.get('/stats', (req, res) => {
     });
 });
 
+//Get purchase details
+router.get('/purchase/:purchaseId/bill', (req, res) => {
+    const { purchaseId } = req.params;
+
+    const query = `
+        SELECT 
+            Purchase.Purchase_ID,
+            Purchase.Date_Of_Purchase,
+            Purchase.Sale_Price,
+            Purchase.Cost,
+            Car.Color,
+            Car.Interior,
+            Customer_Cars.License_Plate,
+            Customer_Cars.License_Plate_State,
+            Vehicle_Type.Make,
+            Vehicle_Type.Model,
+            Vehicle_Type.Year
+        FROM 
+            Purchase
+        INNER JOIN 
+            Car ON Purchase.Car_ID = Car.Car_ID
+        INNER JOIN 
+            Customer_Cars ON Car.Car_ID = Customer_Cars.Car_ID
+        INNER JOIN 
+            Vehicle_Type ON Car.Vehicle_ID = Vehicle_Type.Vehicle_ID
+        WHERE 
+            Purchase.Purchase_ID = ?;
+    `;
+
+    db.query(query, [purchaseId], (err, results) => {
+        if (err) {
+            console.error('Error fetching purchase details:', err);
+            return res.status(500).send('Error fetching purchase details.');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No data found for the given purchase ID.' });
+        }
+
+        res.json(results[0]);
+    });
+});
 
   return router;
-
 };
