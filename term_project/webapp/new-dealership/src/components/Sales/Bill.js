@@ -37,6 +37,9 @@ const Bill = () => {
                     <strong>Purchase ID:</strong> {billDetails.Purchase_ID}
                 </div>
                 <div className="bill-item">
+                    <strong>Customer:</strong> {billDetails.F_Name} {billDetails.L_Name} (ID: {billDetails.Customer_ID})
+                </div>
+                <div className="bill-item">
                     <strong>Date of Purchase:</strong>{' '}
                     {new Date(billDetails.Date_Of_Purchase).toLocaleDateString('en-US')}
                 </div>

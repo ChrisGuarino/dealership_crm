@@ -28,6 +28,7 @@ const PurchasedVehicles = () => {
                 {purchases.map((purchase) => (
                     <li key={purchase.Purchase_ID} className="purchase-item">
                         <p><strong>Purchase ID:</strong> {purchase.Purchase_ID}</p>
+                        <p><strong>Customer:</strong> {purchase.F_Name} {purchase.L_Name} (ID: {purchase.Customer_ID})</p>
                         <p><strong>Date:</strong> {moment(purchase.Date_Of_Purchase).format('MMMM Do, YYYY')}</p>
                         <p><strong>Car:</strong> {purchase.Make} {purchase.Model} ({purchase.Year})</p>
                         <p><strong>Color:</strong> {purchase.Color}</p>

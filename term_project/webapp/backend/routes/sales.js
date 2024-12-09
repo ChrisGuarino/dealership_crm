@@ -17,12 +17,19 @@ router.get('/purchases', (req, res) => {
             Car.Odometer,
             Vehicle_Type.Make,
             Vehicle_Type.Model,
-            Vehicle_Type.Year
+            Vehicle_Type.Year,
+            Customers.Customer_ID,
+            Customers.F_Name,
+            Customers.L_Name
         FROM 
             Purchase
-        INNER JOIN 
+        JOIN 
             Car ON Purchase.Car_ID = Car.Car_ID
-        INNER JOIN 
+        JOIN 
+            Owns ON Purchase.Car_ID = Owns.Car_ID
+        JOIN 
+            Customers ON Owns.Customer_ID = Customers.Customer_ID
+        JOIN 
             Vehicle_Type ON Car.Vehicle_ID = Vehicle_Type.Vehicle_ID;
     `;
 
@@ -98,14 +105,22 @@ router.get('/purchase/:purchaseId/bill', (req, res) => {
             Customer_Cars.License_Plate_State,
             Vehicle_Type.Make,
             Vehicle_Type.Model,
-            Vehicle_Type.Year
+            Vehicle_Type.Year,
+            Customers.Customer_ID,
+            Customers.F_Name,
+            Customers.L_Name
+
         FROM 
             Purchase
-        INNER JOIN 
+        JOIN 
             Car ON Purchase.Car_ID = Car.Car_ID
-        INNER JOIN 
+        JOIN 
             Customer_Cars ON Car.Car_ID = Customer_Cars.Car_ID
-        INNER JOIN 
+        JOIN 
+            Owns ON Purchase.Car_ID = Owns.Car_ID
+        JOIN 
+            Customers ON Owns.Customer_ID = Customers.Customer_ID
+        JOIN 
             Vehicle_Type ON Car.Vehicle_ID = Vehicle_Type.Vehicle_ID
         WHERE 
             Purchase.Purchase_ID = ?;
