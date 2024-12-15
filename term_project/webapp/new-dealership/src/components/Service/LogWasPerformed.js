@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+// Import necessary modules and components
+import React, { useEffect, useState } from 'react'; // React core and hooks
 import {
     fetchAppointments,
     fetchTasksForAppointment,
     fetchPartsForTask,
     logWasPerformed,
     logWasReplaced,
-} from '../../api';
-import '../../styling/LogWasPerformed.css';
+} from '../../api'; // API functions
+import '../../styling/LogWasPerformed.css'; // Import the CSS file for styling
 
+// LogWasPerformed component definition
 const LogWasPerformed = () => {
+    // State for managing appointments, tasks, parts, and form data
     const [appointments, setAppointments] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [parts, setParts] = useState([]);
@@ -23,12 +26,14 @@ const LogWasPerformed = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
+    // useEffect to fetch appointments when the component mounts
     useEffect(() => {
         fetchAppointments()
-            .then((response) => setAppointments(response.data))
-            .catch((err) => console.error('Error fetching appointments:', err));
+            .then((response) => setAppointments(response.data)) // Update state with fetched appointments
+            .catch((err) => console.error('Error fetching appointments:', err)); // Handle errors
     }, []);
 
+    // Reset tasks and parts when the appointment ID changes
     useEffect(() => {
         if (!form.appointmentId) {
             setTasks([]);
@@ -36,23 +41,25 @@ const LogWasPerformed = () => {
         }
     }, [form.appointmentId]);
 
+    // Handle changes in form fields
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
 
+        // Fetch tasks for the selected appointment
         if (name === 'appointmentId' && value) {
             fetchTasksForAppointment(value)
-                .then((response) => setTasks(response.data))
+                .then((response) => setTasks(response.data)) // Update state with fetched tasks
                 .catch((err) => {
                     console.error('Error fetching tasks for appointment:', err);
                     setTasks([]);
                 });
         }
 
+        // Fetch parts for the selected task and update task details
         if (name === 'taskId' && value) {
-            // Fetch parts for the selected task
             fetchPartsForTask(value)
-                .then((response) => setParts(response.data))
+                .then((response) => setParts(response.data)) // Update state with fetched parts
                 .catch((err) => {
                     console.error('Error fetching parts for task:', err);
                     setParts([]);
@@ -69,6 +76,7 @@ const LogWasPerformed = () => {
         }
     };
 
+    // Toggle part selection
     const handlePartToggle = (partId) => {
         setSelectedParts((prevSelectedParts) =>
             prevSelectedParts.includes(partId)
@@ -77,22 +85,27 @@ const LogWasPerformed = () => {
         );
     };
 
+    // Handle form submission to log tasks and parts
     const handleSubmit = (e) => {
         e.preventDefault();
         const { appointmentId, taskId, laborCost, time } = form;
 
+        // Validate required fields
         if (!appointmentId || !taskId || !laborCost || !time) {
             setError('All fields are required.');
             return;
         }
 
+        // Log the task
         logWasPerformed({ appointmentId, taskId, laborCost, time })
             .then(() => {
+                // If parts are selected, log them as replaced
                 if (selectedParts.length > 0) {
                     return logWasReplaced({ appointmentId, partIds: selectedParts });
                 }
             })
             .then(() => {
+                // Reset form and state on successful submission
                 setMessage('Task and parts successfully logged.');
                 setError('');
                 setForm({ appointmentId: '', taskId: '', laborCost: '', time: '' });
@@ -113,6 +126,7 @@ const LogWasPerformed = () => {
             {message && <p className="message">{message}</p>}
             {error && <p className="error">{error}</p>}
             <form className="log-task-form" onSubmit={handleSubmit}>
+                {/* Dropdown for selecting an appointment */}
                 <label className="form-label">
                     Select Appointment:
                     <select
@@ -130,6 +144,7 @@ const LogWasPerformed = () => {
                     </select>
                 </label>
 
+                {/* Dropdown for selecting a task */}
                 <label className="form-label">
                     Select Task:
                     <select
@@ -156,6 +171,7 @@ const LogWasPerformed = () => {
                     </div>
                 )}
 
+                {/* Input fields for labor cost and time */}
                 <label className="form-label">
                     Labor Cost ($):
                     <input
@@ -178,6 +194,7 @@ const LogWasPerformed = () => {
                     />
                 </label>
 
+                {/* List of parts for selection */}
                 <label className="form-label">
                     Select Parts Used:
                     <ul className="parts-list">
@@ -198,6 +215,7 @@ const LogWasPerformed = () => {
                     </ul>
                 </label>
 
+                {/* Submit button */}
                 <button className="submit-button" type="submit">
                     Log Task and Parts
                 </button>
@@ -206,4 +224,5 @@ const LogWasPerformed = () => {
     );
 };
 
+// Export the LogWasPerformed component as the default export
 export default LogWasPerformed;

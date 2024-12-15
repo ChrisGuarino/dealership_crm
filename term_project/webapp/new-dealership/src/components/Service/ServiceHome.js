@@ -1,15 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../../styling/ServiceHome.css';
+// Import necessary modules and components
+import React from 'react'; // React core
+import { Link } from 'react-router-dom'; // Link component for navigation
+import '../../styling/ServiceHome.css'; // Import the CSS file for styling
 
+// ServiceHome component definition
 const ServiceHome = () => {
     return (
         <div className="service-home-container">
             <h1 className="title">Service Department</h1>
+            {/* Brief description of the service department */}
             <p className="description">
                 Manage service appointments, packages, and parts inventory.
             </p>
             
+            {/* Navigation links for service-related actions */}
             <nav className="service-nav">
                 <ul className="nav-list">
                     <li className="nav-item">
@@ -43,4 +47,5 @@ const ServiceHome = () => {
     );
 };
 
+// Export the ServiceHome component as the default export
 export default ServiceHome;

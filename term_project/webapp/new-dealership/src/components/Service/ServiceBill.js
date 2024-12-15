@@ -1,34 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchServiceBill } from '../../api';
-import '../../styling/ServiceBill.css';
+// Import necessary modules and components
+import React, { useEffect, useState } from 'react'; // React core and hooks
+import { useParams } from 'react-router-dom'; // Hook to retrieve route parameters
+import { fetchServiceBill } from '../../api'; // API function to fetch service bill details
+import '../../styling/ServiceBill.css'; // Import the CSS file for styling
 
+// ServiceBill component definition
 const ServiceBill = () => {
+    // Extract the appointmentId from the route parameters
     const { appointmentId } = useParams();
+
+    // State to store fetched service bill details
     const [bill, setBill] = useState(null);
+    // State to handle error messages
     const [error, setError] = useState('');
 
+    // useEffect to fetch service bill details when the component mounts or appointmentId changes
     useEffect(() => {
         fetchServiceBill(appointmentId)
-            .then((response) => setBill(response.data))
+            .then((response) => setBill(response.data)) // Update state with fetched data
             .catch((err) => {
-                console.error('Error fetching service bill:', err);
-                setError('Failed to fetch the service bill.');
+                console.error('Error fetching service bill:', err); // Log error
+                setError('Failed to fetch the service bill.'); // Set an error message
             });
-    }, [appointmentId]);
+    }, [appointmentId]); // Dependency array ensures effect runs when appointmentId changes
 
+    // If there is an error, display the error message
     if (error) {
         return <p className="error-text">{error}</p>;
     }
 
+    // If service bill details are not yet loaded, display a loading message
     if (!bill) {
         return <p className="loading-text">Loading bill details...</p>;
     }
 
+    // Render the service bill details
     return (
         <div className="service-bill-container">
             <h1 className="title">Service Bill</h1>
             <h2 className="subtitle">Appointment ID: {appointmentId}</h2>
+
+            {/* Render the tasks performed */}
             <h3 className="section-title">Tasks Performed</h3>
             <ul className="bill-list">
                 {bill.tasks.map((task) => (
@@ -37,6 +49,8 @@ const ServiceBill = () => {
                     </li>
                 ))}
             </ul>
+
+            {/* Render the parts used */}
             <h3 className="section-title">Parts Used</h3>
             <ul className="bill-list">
                 {bill.parts.map((part) => (
@@ -45,6 +59,8 @@ const ServiceBill = () => {
                     </li>
                 ))}
             </ul>
+
+            {/* Render the totals */}
             <h3 className="section-title">Totals</h3>
             <div className="totals">
                 <p><strong>Total Labor Cost:</strong> ${Number(bill.totalLaborCost).toFixed(2)}</p>
@@ -55,4 +71,5 @@ const ServiceBill = () => {
     );
 };
 
+// Export the ServiceBill component as the default export
 export default ServiceBill;

@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { createAppointment, fetchCustomerVehicles, fetchCustomers, fetchPackages, fetchTasks } from '../../api';
-import '../../styling/AddAppointment.css';
+// Import necessary modules and components
+import React, { useState, useEffect } from 'react'; // React core and hooks
+import { createAppointment, fetchCustomerVehicles, fetchCustomers, fetchPackages, fetchTasks } from '../../api'; // API functions
+import '../../styling/AddAppointment.css'; // Import the CSS file for styling
 
+// AddAppointment component definition
 const AddAppointment = () => {
+    // State to manage appointment data
     const [appointment, setAppointment] = useState({
         Start_Time: '',
         End_Time: '',
@@ -15,36 +18,39 @@ const AddAppointment = () => {
         Customer_ID: '',
     });
 
+    // Additional states for managing data
     const [customers, setCustomers] = useState([]);
     const [vehicles, setVehicles] = useState([]);
-    const [filteredVehicles, setFilteredVehicles] = useState([]); // Filtered list of vehicles based on selected customer
+    const [filteredVehicles, setFilteredVehicles] = useState([]); // Filtered list of vehicles for a customer
     const [packages, setPackages] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [selectedTasks, setSelectedTasks] = useState([]);
+    const [selectedTasks, setSelectedTasks] = useState([]); // Selected tasks for the appointment
 
+    // useEffect to fetch data when the component mounts
     useEffect(() => {
         fetchCustomers()
-            .then((response) => setCustomers(response.data))
+            .then((response) => setCustomers(response.data)) // Set customers list
             .catch((error) => console.error('Error fetching customers:', error));
 
         fetchCustomerVehicles()
-            .then((response) => setVehicles(response.data))
+            .then((response) => setVehicles(response.data)) // Set vehicles list
             .catch((error) => console.error('Error fetching vehicles:', error));
 
         fetchPackages()
-            .then((response) => setPackages(response.data))
+            .then((response) => setPackages(response.data)) // Set packages list
             .catch((error) => console.error('Error fetching packages:', error));
 
         fetchTasks()
-            .then((response) => setTasks(response.data))
+            .then((response) => setTasks(response.data)) // Set tasks list
             .catch((error) => console.error('Error fetching tasks:', error));
     }, []);
 
+    // Handle form field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setAppointment({ ...appointment, [name]: value });
 
-        // Filter vehicles when a customer is selected
+        // Filter vehicles based on selected customer
         if (name === 'Customer_ID') {
             const ownedVehicles = vehicles.filter(
                 (vehicle) => vehicle.Customer_ID === parseInt(value, 10)
@@ -54,19 +60,22 @@ const AddAppointment = () => {
         }
     };
 
+    // Toggle task selection
     const handleTaskToggle = (taskId) => {
         setSelectedTasks((prev) =>
             prev.includes(taskId) ? prev.filter((id) => id !== taskId) : [...prev, taskId]
         );
     };
 
+    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-
         const data = { ...appointment, Additional_Tasks: selectedTasks };
+
         createAppointment(data)
             .then(() => {
                 alert('Appointment added successfully!');
+                // Reset form fields and state
                 setAppointment({
                     Start_Time: '',
                     End_Time: '',
@@ -81,15 +90,14 @@ const AddAppointment = () => {
                 setSelectedTasks([]);
                 setFilteredVehicles([]);
             })
-            .catch((err) => {
-                console.error('Error adding appointment:', err);
-            });
+            .catch((err) => console.error('Error adding appointment:', err));
     };
 
     return (
         <form onSubmit={handleSubmit} className="add-appointment-form">
             <h1>Add Service Appointment</h1>
 
+            {/* Input fields for appointment details */}
             <label>
                 Start Time:
                 <input
@@ -156,6 +164,7 @@ const AddAppointment = () => {
                 />
             </label>
 
+            {/* Dropdowns for customer, vehicle, and package selection */}
             <label>
                 Select Customer:
                 <select
@@ -208,6 +217,7 @@ const AddAppointment = () => {
                 </select>
             </label>
 
+            {/* Task selection */}
             <h3>Additional Tasks (Optional)</h3>
             <ul className="tasks-list">
                 {tasks.map((task) => {
@@ -233,4 +243,5 @@ const AddAppointment = () => {
     );
 };
 
+// Export the AddAppointment component as the default export
 export default AddAppointment;

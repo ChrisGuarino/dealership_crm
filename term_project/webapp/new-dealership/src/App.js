@@ -95,7 +95,7 @@ const App = () => {
 
                 {/* Footer */}
                 <footer className="main-footer">
-                    &copy; {new Date().getFullYear()} Dealership Management. All Rights Reserved.
+                    &copy; {new Date().getFullYear()} Chris $ Alex's Dealership Management. All Rights Reserved.
                 </footer>
             </div>
         </Router>

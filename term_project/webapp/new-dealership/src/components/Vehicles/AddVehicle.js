@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { addVehicleToInventory } from '../../api';
-import '../../styling/AddVehicle.css';
+// Import necessary modules and components
+import React, { useState } from 'react'; // React core and hooks
+import { addVehicleToInventory } from '../../api'; // API function to add a vehicle to inventory
+import '../../styling/AddVehicle.css'; // Import the CSS file for styling
 
+// AddVehicle component definition
 const AddVehicle = () => {
+    // State to store form data for the vehicle being added
     const [vehicle, setVehicle] = useState({
         Make: '',
         Model: '',
@@ -14,19 +17,24 @@ const AddVehicle = () => {
         Color: '',
         Cost: '',
     });
+
+    // Predefined lists for colors and years
     const colors = ['Red', 'Blue', 'Black', 'White', 'Gray', 'Silver'];
     const years = Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i).toString());
 
+    // Handle changes in form inputs
     const handleChange = (e) => {
         const { name, value } = e.target;
         setVehicle({ ...vehicle, [name]: value });
     };
 
+    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        addVehicleToInventory(vehicle)
+        addVehicleToInventory(vehicle) // Call the API to add the vehicle
             .then(() => {
-                alert('Vehicle added to inventory successfully!');
+                alert('Vehicle added to inventory successfully!'); // Show success message
+                // Reset form fields
                 setVehicle({
                     Make: '',
                     Model: '',
@@ -39,13 +47,15 @@ const AddVehicle = () => {
                     Cost: '',
                 });
             })
-            .catch((err) => console.error('Error adding vehicle:', err));
+            .catch((err) => console.error('Error adding vehicle:', err)); // Handle errors
     };
 
+    // Render the form for adding a vehicle
     return (
         <div className="add-vehicle-container">
             <h1 className="title">Add Vehicle to Inventory</h1>
             <form className="add-vehicle-form" onSubmit={handleSubmit}>
+                {/* Form fields for vehicle details */}
                 <label className="form-label">
                     Make:
                     <input
@@ -165,4 +175,5 @@ const AddVehicle = () => {
     );
 };
 
+// Export the AddVehicle component as the default export
 export default AddVehicle;

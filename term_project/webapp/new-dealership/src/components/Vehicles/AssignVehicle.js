@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { fetchVehiclesInInventory, fetchCustomers, assignVehicleToCustomer } from '../../api';
-import '../../styling/AssignVehicle.css';
+// Import necessary modules and components
+import React, { useEffect, useState } from 'react'; // React core and hooks
+import { fetchVehiclesInInventory, fetchCustomers, assignVehicleToCustomer } from '../../api'; // API functions
+import '../../styling/AssignVehicle.css'; // Import the CSS file for styling
 
+// AssignVehicle component definition
 const AssignVehicle = () => {
+    // State to store the list of vehicles and customers
     const [vehicles, setVehicles] = useState([]);
     const [customers, setCustomers] = useState([]);
+
+    // State to store form data
     const [form, setForm] = useState({
         Car_ID: '',
         Customer_ID: '',
@@ -14,6 +19,7 @@ const AssignVehicle = () => {
         License_Plate: '',
     });
 
+    // List of U.S. states for license plate selection
     const states = [
         'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
         'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
@@ -25,12 +31,12 @@ const AssignVehicle = () => {
     // Fetch vehicles and customers when the component mounts
     useEffect(() => {
         fetchVehiclesInInventory()
-            .then((response) => setVehicles(response.data))
-            .catch((err) => console.error('Error fetching vehicles:', err));
+            .then((response) => setVehicles(response.data)) // Update vehicles state
+            .catch((err) => console.error('Error fetching vehicles:', err)); // Handle errors
 
         fetchCustomers()
-            .then((response) => setCustomers(response.data))
-            .catch((err) => console.error('Error fetching customers:', err));
+            .then((response) => setCustomers(response.data)) // Update customers state
+            .catch((err) => console.error('Error fetching customers:', err)); // Handle errors
     }, []);
 
     // Handle form input changes
@@ -42,9 +48,10 @@ const AssignVehicle = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        assignVehicleToCustomer(form)
+        assignVehicleToCustomer(form) // Call API to assign vehicle to a customer
             .then(() => {
-                alert('Vehicle successfully assigned to customer!');
+                alert('Vehicle successfully assigned to customer!'); // Show success message
+                // Reset form fields
                 setForm({
                     Car_ID: '',
                     Customer_ID: '',
@@ -54,13 +61,15 @@ const AssignVehicle = () => {
                     License_Plate: '',
                 });
             })
-            .catch((err) => console.error('Error assigning vehicle:', err));
+            .catch((err) => console.error('Error assigning vehicle:', err)); // Handle errors
     };
 
+    // Render the form to assign a vehicle to a customer
     return (
         <div className="assign-vehicle-container">
             <h1 className="title">Assign Vehicle to Customer</h1>
             <form className="assign-vehicle-form" onSubmit={handleSubmit}>
+                {/* Dropdown for selecting a vehicle */}
                 <label className="form-label">
                     Select Vehicle:
                     <select name="Car_ID" value={form.Car_ID} onChange={handleChange} required>
@@ -72,6 +81,8 @@ const AssignVehicle = () => {
                         ))}
                     </select>
                 </label>
+
+                {/* Dropdown for selecting a customer */}
                 <label className="form-label">
                     Select Customer:
                     <select name="Customer_ID" value={form.Customer_ID} onChange={handleChange} required>
@@ -83,6 +94,8 @@ const AssignVehicle = () => {
                         ))}
                     </select>
                 </label>
+
+                {/* Input for purchase date */}
                 <label className="form-label">
                     Purchase Date:
                     <input
@@ -93,6 +106,8 @@ const AssignVehicle = () => {
                         required
                     />
                 </label>
+
+                {/* Input for sale price */}
                 <label className="form-label">
                     Sale Price:
                     <input
@@ -105,6 +120,8 @@ const AssignVehicle = () => {
                         required
                     />
                 </label>
+
+                {/* Dropdown for selecting license plate state */}
                 <label className="form-label">
                     License Plate State:
                     <select name="License_Plate_State" value={form.License_Plate_State} onChange={handleChange} required>
@@ -114,6 +131,8 @@ const AssignVehicle = () => {
                         ))}
                     </select>
                 </label>
+
+                {/* Input for license plate number */}
                 <label className="form-label">
                     License Plate Number:
                     <input
@@ -125,10 +144,13 @@ const AssignVehicle = () => {
                         required
                     />
                 </label>
+
+                {/* Submit button */}
                 <button className="submit-button" type="submit">Assign Vehicle</button>
             </form>
         </div>
     );
 };
 
+// Export the AssignVehicle component as the default export
 export default AssignVehicle;
